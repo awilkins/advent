@@ -83,12 +83,22 @@ class Edge():
 class Wire():
 
   def __init__(self, path):
-    # self.points = parse_points(path)
+    self.points = parse_points(path)
     self.vertex = parse_vertices(path)
 
   def edges(self):
     for ii in range(1, len(self.vertex)):
       yield Edge(self.vertex[ii - 1], self.vertex[ii])
+
+  def latency_to(self, point):
+    latency = 0
+    findPoint = self.points[latency]
+    while point != findPoint:
+      latency += 1
+      findPoint = self.points[latency]
+
+    return latency + 1
+
 
   def intersections_with(self, other_wire):
     intersections = []
@@ -112,3 +122,16 @@ def nearest_intersection(wire_a, wire_b):
     )
     distance = ZERO.manhattan_distance_from(intersections[0])
     return distance
+
+def total_latency(wire_a, wire_b, point):
+  return wire_a.latency_to(point) + wire_b.latency_to(point)
+
+def fastest_intersection(wire_a, wire_b):
+  wire_a = Wire(wire_a)
+  wire_b = Wire(wire_b)
+  latency = lambda point: total_latency(wire_a, wire_b, point)
+  intersections = sorted(
+    wire_a.intersections_with(wire_b),
+    key=latency
+  )
+  return latency(intersections[0])
