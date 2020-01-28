@@ -1,5 +1,5 @@
 
-from int_comp import run, parse, execute
+from intcomp import run, parse, execute
 
 programFile = open("./program.txt")
 
