@@ -1,13 +1,16 @@
 
 import unittest
-from int_comp import run
+
+import queue
+
+from intcomp import run, execute
 
 class TestPrograms(unittest.TestCase):
 
   def test_one(self):
     output, memory = run("1,0,0,0,99")
     self.assertEqual(2, output)
-  
+
   def test_two(self):
     output, memory = run("2,3,0,3,99")
     self.assertEqual(6, memory[-2])
@@ -30,3 +33,30 @@ class TestPrograms(unittest.TestCase):
                99,
                30, 40, 50]
     self.assertEqual(memory, expected)
+
+  def test_v2(self):
+    input = queue.Queue()
+    output = queue.Queue()
+
+    expected = 69
+    input.put(expected)
+
+    memory = [3, 0, 4, 0, 99]
+    result, memory = execute(memory, input, output)
+
+    actual = output.get()
+    self.assertEqual(expected, actual)
+
+  def test_immediate(self):
+    program = [1002, 4, 3, 4, 33]
+    expected = [1002, 4, 3, 4, 99]
+
+    result, memory = execute(program)
+    self.assertEqual(expected, memory)
+
+  def test_negs(self):
+    program = [1101, 100, -1, 4, 0]
+    expected = [1101, 100, -1, 4, 99]
+
+    result, memory = execute(program)
+    self.assertEqual(expected, memory)
