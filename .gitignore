@@ -1,0 +1,5 @@
+**/target
+
+.noseids
+__pycache__/
+*.egg-info/
