@@ -2,7 +2,9 @@ import os
 from pathlib import Path
 from unittest import TestCase
 
-from advent.advent_01 import expense_anomaly, expense_anomaly_triple
+from ..util import get_resource
+
+from advent.day_01.advent_01 import expense_anomaly, expense_anomaly_triple
 
 class Advent01Tests(TestCase):
   def test_example(self):
@@ -21,8 +23,7 @@ class Advent01Tests(TestCase):
   
   def test_problem(self):
 
-    module_path = os.path.dirname(__file__)
-    expense_path = Path(os.path.join(module_path, 'input_01.txt'))
+    expense_path = get_resource('day_01/input_01.txt')
     expenses = open(expense_path).read()
     
     print('\nAnswer 1:')
