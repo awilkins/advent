@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "advent"
+version = "0.1.0"
+description = ""
+authors = ["Adrian Wilkins <adrian.wilkins@infinityworks.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+
+[tool.poetry.dev-dependencies]
+nose = "^1.3.7"
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"
