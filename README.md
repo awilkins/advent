@@ -18,3 +18,15 @@ poetry shell
 # use -s or --nocapture because the answers are printed to STDOUT by the tests
 nosetests -s tests/day_01/test_advent_01.py
 ```
+
+## Rust
+
+Rust is a normal Rust kinda project.
+
+```
+cd rust
+cargo run
+# OR
+cargo build --release
+time ./target/release/advent # for speed bragging rights
+```
