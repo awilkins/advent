@@ -12,7 +12,7 @@ def check_int(value, lower, upper) -> bool:
     except:
         return False
 
-def check_byr(value): return check_int(value, 1920,2002)
+def check_byr(value): return check_int(value, 1920, 2002)
 
 def check_iyr(value): return check_int(value, 2010, 2020)
 
@@ -83,23 +83,20 @@ def check_valid(passport: Dict[str, str], extended_validation=False):
 
 def parse(passports: List[str]):
 
-    retval = []
     passport: Dict[str, str] = {}
-    line = ""
     for line in passports:
         if len(line) == 0:
-            retval.append(passport)
+            yield passport
             passport = {}
             continue
+
         fields = line.split(' ')
         for field in fields:
             fieldname, value = field.split(':')
             passport[fieldname] = value
 
-    if len(line):
-        retval.append(passport)
+    yield passport
 
-    return retval
 
 
 def check_passports(passports, extended=False):
