@@ -1,4 +1,3 @@
-from collections import UserList
 from typing import List, Tuple
 
 def get_square(map_line, x):
