@@ -60,3 +60,17 @@ class TestPrograms(unittest.TestCase):
 
     result, memory = execute(program)
     self.assertEqual(expected, memory)
+
+  def test_jmt(self):
+    program = [3, 9, 8, 9, 10, 9, 4, 9, 99, -1, 8]
+
+    stdin = queue.Queue()
+    stdout = queue.Queue()
+
+    # test true
+    stdin.put(8)
+
+    exitcode, memory = execute(program, stdin, stdout)
+    result = stdout.get()
+    self.assertEqual(1, result)
+

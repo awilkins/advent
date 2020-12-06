@@ -6,6 +6,11 @@ ADD = 1
 MUL = 2
 INP = 3
 OUT = 4
+JMT = 5
+JMF = 6
+LTT = 7
+EQT = 8
+
 
 IMMEDIATE = 1000
 
@@ -54,6 +59,30 @@ def op(pc):
   if opcode == MUL:
     memory[ptrc] = a * b
     return pc + 4
+
+  if opcode == JMT:
+    if a != 0:
+      return b
+    else:
+      return pc + 4
+
+  if opcode == JMF:
+    if a == 0:
+      return b
+    else:
+      return pc + 4
+
+  if opcode == LTT:
+    if a < b:
+      memory[ptrc] = 1
+    else:
+      memory[ptrc] = 0
+
+  if opcode == EQT:
+    if a == b:
+      memory[ptrc] = 1
+    else:
+      memory[ptrc] = 0
 
   if opcode == INP:
     memory[ptra] = stdin.get()
@@ -129,9 +158,3 @@ def execute(program, input=None, output=None):
 
 def run(program):
   return execute(parse(program))
-
-
-
-program = [1002, 4, 3, 4, 33]
-# program = [1101, 100, -1, 4, 0]
-execute(program)
