@@ -31,11 +31,11 @@ def find_xmas_flaw(xmas: List[str], preamble: int):
 def find_xmas_weakness(xmas: List[str], breakval: int) -> int:
     ixmas = [int(x) for x in xmas]
 
-    size = 1
+    size = 2
 
     while True:
-        size += 1
         for ix in range(len(ixmas) - size):
             break_key = ixmas[ix:ix+size]
             if(sum(break_key)) == breakval:
                 return min(break_key) + max(break_key)
+        size += 1

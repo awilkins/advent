@@ -2,7 +2,7 @@ from unittest import TestCase
 
 from ..util import get_resource
 
-from advent.day_09.xmas import find_xmas_flaw, find_xmas_weakness
+from advent.day_09.xmas import *
 
 EXAMPLE_5 = """\
 35
