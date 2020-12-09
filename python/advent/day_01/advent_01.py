@@ -14,6 +14,8 @@ def expense_anomaly(expenses: str) -> int:
             if a + b == 2020:
                 return a * b
 
+    return -1
+
 
 def expense_anomaly_triple(expenses: str) -> int:
     expense_lines = [int(line) for line in expenses.splitlines()]
@@ -33,3 +35,5 @@ def expense_anomaly_triple(expenses: str) -> int:
 
                 if a + b + c == 2020:
                     return a * b * c
+
+    return -1
