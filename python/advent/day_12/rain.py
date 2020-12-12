@@ -49,7 +49,7 @@ class Ship:
         self.direction = (self.direction + turn_amount) % 360
 
     def rotate(self, opcode, degrees):
-
+        assert(degrees % 90 == 0)
         current = self.direction
         new_heading = (current + (VECTORS[opcode] * degrees)) % 360
         if new_heading < current:
