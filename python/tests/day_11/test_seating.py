@@ -1,4 +1,7 @@
 from unittest import TestCase, skip
+from unittest.case import skipUnless
+
+import os
 
 from ..util import get_resource
 
@@ -78,7 +81,7 @@ class TestSeating(TestCase):
 
         self.assertEqual(expected, count)
 
-    @skip("takes too long")
+    @skipUnless(os.environ.get('ALL'), "slow")
     def test_answer_1(self):
         input_lines = get_resource(f'day_{DAY}/input.txt').read_text().splitlines()
 
@@ -173,7 +176,7 @@ class TestSeating(TestCase):
         self.assertEqual(expected, actual)
 
 
-    @skip('Takes too long')
+    @skipUnless(os.environ.get('ALL'), "slow")
     def test_answer_2(self):
         input_lines = get_resource(f'day_{DAY}/input.txt').read_text().splitlines()
 
