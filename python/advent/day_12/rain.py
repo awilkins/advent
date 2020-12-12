@@ -50,18 +50,14 @@ class Ship:
 
     def rotate(self, opcode, degrees):
         assert(degrees % 90 == 0)
-        current = self.direction
-        new_heading = (current + (VECTORS[opcode] * degrees)) % 360
-        if new_heading < current:
-            new_heading += 360
+        new_heading = (self.direction + (VECTORS[opcode] * degrees)) % 360
 
-        change_ticks = (new_heading - current) // 90
-
-        for _ in range(change_ticks):
+        while self.direction != new_heading:
             y = - self.x
             x = self.y
             self.y = y
             self.x = x
+            self.turn("R", 90)
 
     def cardinal(self, opcode, scalar):
         dx, dy = VECTORS[opcode]
