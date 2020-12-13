@@ -1,6 +1,6 @@
-from datetime import time
+import os
 from unittest import TestCase
-from unittest.case import skip
+from unittest.case import skip, skipUnless
 
 from ..util import get_resource
 
@@ -13,27 +13,18 @@ EXAMPLE_INPUT = """\
 7,13,x,x,59,x,31,19
 """
 
-class TestThing(TestCase):
+class TestBuses(TestCase):
 
-
-
-    # def test_example_1(self):
-    #     input_lines = EXAMPLE_INPUT.splitlines()
-
-    #     expected =
-    #     actual =
-
-    #     self.assertEqual(expected, actual)
 
     def test_answer_1(self):
         input_lines = get_resource(f'day_{DAY}/input.txt').read_text().splitlines()
 
-        expected = 5946
         answer = time_1(input_lines)
-        self.assertEqual(expected, answer)
         print(f'\nAnswer 1 : {answer}\n')
 
-    @skip("asefwef")
+        expected = 5946
+        self.assertEqual(expected, answer)
+
     def test_example_1(self):
         for lines, expected in [
             (["", "17,x,13,19"], 3417),
@@ -46,18 +37,11 @@ class TestThing(TestCase):
             with self.subTest(line=lines[1]):
                 self.assertEqual(expected, time_2(lines))
 
-        # lines = EXAMPLE_INPUT.splitlines()
-        # expected = 1068781
-
-        # answer = time_2(lines)
-        # self.assertEqual(expected, answer)
-
-    # @skip("bkasodf")
     def test_answer_2(self):
         input_lines = get_resource(f'day_{DAY}/input.txt').read_text().splitlines()
 
-        # expected =
+        expected = 645338524823718
         answer = time_2(input_lines)
-        # self.assertEqual(expected, answer)
+        self.assertEqual(expected, answer)
         print(f'\nAnswer 2 : {answer}\n')
 

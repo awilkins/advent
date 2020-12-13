@@ -15,61 +15,46 @@ def time_1(lines: List[str]):
     ])
     return (first - start) * bus
 
-def gcd_plus_n(a, b, n):
-    count = 0
-    while b > n:
-        a, b = b, a % b
-        count += 1
-    print(count)
-    return a
+def periodicity(start, interval, bus, column):
+    new_start = 0
+    new_interval = 0
+
+    ts = start
+
+    # First bus
+    while True:
+        if (ts + column) % bus == 0:
+            new_start = ts
+            break
+        ts += interval
+
+    # Kick it on one so the next test doesn't hit
+    ts += interval
+
+    # Next bus determines periodicity of bus alignment
+    while True:
+        if (ts + column) % bus == 0:
+            new_interval = ts - new_start
+            break
+        ts += interval
+
+    return new_start, new_interval
 
 
-def offset_times(start, bus_ids, multipliers):
-    return [
-        (bus_ids[ii] * multipliers[ii]) - ii if bus_ids[ii] > 0 else 0
-        for ii in range(len(bus_ids))
-    ]
+def time_2(lines: List[str]) -> int:
 
-def ideal_bus_value(bus_ids):
-    value = 0
+    bus_id = [int(b) if b != 'x' else 0 for b in lines[1].split(',')]
 
+    start = 0
+    interval = bus_id[0]
 
-def bus_value(bus_ids, multipliers):
-    value = 0
-    start = bus_ids[0] * multipliers[0]
-    for ii in range(1, bus_ids):
-        value += bus_ids
-
-def valid(start: int, times: List[int]) -> bool:
-    for ii in range(len(times)):
-        if times[ii] != start and times[ii] != 0:
-            return False
-    return True
-
-def time_2(lines: List[str], start=0) -> int:
-
-    bus_ids = [int(b) if b != 'x' else 0 for b in lines[1].split(',')]
-
-    multipliers: List[int] = list(repeat(1, len(bus_ids)))
-    if start == 0: start = max(bus_ids)
-
-    o_times = offset_times(start, bus_ids, multipliers)
-
-    while not valid(start, o_times):
-        for ii in range(len(o_times)):
-            t = o_times[ii]
-            if t != 0 and t <= start:
-                diff = start - t
-                multiplier_bump = diff // bus_ids[ii]
-                if diff % bus_ids[ii]:
-                    multiplier_bump += 1
-                multipliers[ii] = multipliers[ii] + multiplier_bump
-
-        o_times = offset_times(start, bus_ids, multipliers)
-        start = max([time for time in o_times])
-        # print(o_times)
+    for ii in range(len(bus_id)):
+        bus = bus_id[ii]
+        if bus != 0:
+            start, interval = periodicity(start, interval, bus, ii)
 
     return start
+
 
 INPUT = """\
 1008832
