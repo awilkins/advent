@@ -1,6 +1,7 @@
 from itertools import repeat
 from typing import Dict, List
 
+SIZE = 36
 
 def make_mask(x: str, mask: str):
     m_trans = "01X"
@@ -24,11 +25,10 @@ class BitComp:
     def set_mask(self, mask: str):
         assert(len(mask) == 36)
 
-        # 40 bits is easier 'cos you can't convert half a byte from an int
-        mask = f"0000{mask}"
+        mask = mask.zfill(SIZE)
 
         self.floating_positions = []
-        for ii in range(40):
+        for ii in range(SIZE):
             if mask[ii] == "X":
                 self.floating_positions.append(ii)
 
@@ -62,7 +62,7 @@ class BitComp:
 
         masked_address = address | self.ones_mask
 
-        float_high = 2 ** self.floating_count
+        float_high = 1 << self.floating_count
 
         addresses = []
         for floatbits in range(float_high):
@@ -72,8 +72,8 @@ class BitComp:
             float_mask: int = 0
             inverse_float_mask: int = 0
             for ii in range(self.floating_count):
-                bit = 2 ** ( 39 - self.floating_positions[ii])
-                val = (floatbits >> (self.floating_count - ii - 1))  & 1
+                bit = 2 ** ( (SIZE - 1) - self.floating_positions[ii])
+                val = (floatbits >> (self.floating_count - ii - 1)) & 1
                 float_mask |= val * bit
                 inverse_float_mask |= (val ^ 1) * bit
 
