@@ -60,8 +60,7 @@ class BitComp:
     def splat(self, address: int, value: int) -> List[int]:
         """ returns the list of splatted addresses """
 
-        address_bits = address
-        masked_address = address_bits | self.ones_mask
+        masked_address = address | self.ones_mask
 
         float_high = 2 ** self.floating_count
 
@@ -69,21 +68,24 @@ class BitComp:
         for floatbits in range(float_high):
             bfloat = bin(floatbits)[2:].zfill(self.floating_count)
 
-            address_bits = list(bin(masked_address)[2:].zfill(40))
+            new_address = masked_address
 
+            float_mask: int = 0
+            inverse_float_mask: int = 0
             for ii in range(len(bfloat)):
-                address_bits[self.floating_positions[ii]] = bfloat[ii]
+                bit = 2 ** ( 39 - self.floating_positions[ii])
+                val = int(bfloat[ii])
+                float_mask |= val * bit
+                inverse_float_mask |= (val ^ 1) * bit
 
-            new_address = int("".join(address_bits), 2)
+            new_address &= ~inverse_float_mask # zeroes
+            new_address |= float_mask # ones
 
             addresses.append(
                 new_address
             )
         for addr in addresses:
-            try:
-                self.memory[addr] = value
-            except IndexError as e:
-                print(addr, e)
+            self.memory[addr] = value
 
         return addresses
 
