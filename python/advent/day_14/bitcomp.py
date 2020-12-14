@@ -66,15 +66,14 @@ class BitComp:
 
         addresses = []
         for floatbits in range(float_high):
-            bfloat = bin(floatbits)[2:].zfill(self.floating_count)
 
             new_address = masked_address
 
             float_mask: int = 0
             inverse_float_mask: int = 0
-            for ii in range(len(bfloat)):
+            for ii in range(self.floating_count):
                 bit = 2 ** ( 39 - self.floating_positions[ii])
-                val = int(bfloat[ii])
+                val = (floatbits >> (self.floating_count - ii - 1))  & 1
                 float_mask |= val * bit
                 inverse_float_mask |= (val ^ 1) * bit
 
