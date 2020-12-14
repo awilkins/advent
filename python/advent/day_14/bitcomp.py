@@ -37,6 +37,28 @@ class BitComp:
         self.zeroes_mask = make_mask("0", mask)
         self.ones_mask = make_mask("1", mask)
 
+        if self.mode == 2:
+            self.compute_floating_mask()
+
+
+    def compute_floating_mask(self):
+        float_high = 1 << self.floating_count
+        self.floats = []
+        for floatbits in range(float_high):
+
+            float_mask: int = 0
+            inverse_float_mask: int = 0
+
+            for ii in range(self.floating_count):
+                bit = 2 ** ( (SIZE - 1) - self.floating_positions[ii])
+                val = (floatbits >> (self.floating_count - ii - 1)) & 1
+                float_mask |= val * bit
+                inverse_float_mask |= (val ^ 1) * bit
+
+            self.floats.append(
+                (float_mask, inverse_float_mask)
+            )
+
 
     def maskval(self, value: int):
         bval = value
@@ -62,29 +84,13 @@ class BitComp:
 
         masked_address = address | self.ones_mask
 
-        float_high = 1 << self.floating_count
-
         addresses = []
-        for floatbits in range(float_high):
 
-            new_address = masked_address
-
-            float_mask: int = 0
-            inverse_float_mask: int = 0
-            for ii in range(self.floating_count):
-                bit = 2 ** ( (SIZE - 1) - self.floating_positions[ii])
-                val = (floatbits >> (self.floating_count - ii - 1)) & 1
-                float_mask |= val * bit
-                inverse_float_mask |= (val ^ 1) * bit
-
-            new_address &= ~inverse_float_mask # zeroes
-            new_address |= float_mask # ones
-
-            addresses.append(
-                new_address
-            )
-        for addr in addresses:
-            self.memory[addr] = value
+        for mask, inverse in self.floats:
+            new_address = masked_address & ~inverse
+            new_address |= mask
+            self.memory[new_address] = value
+            addresses.append(new_address)
 
         return addresses
 
@@ -94,6 +100,7 @@ class BitComp:
 
 
     def set_mode(self, mode: int):
+        self.mode = mode
         if mode == 2:
             self.addr = self.splat
         else:

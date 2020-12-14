@@ -30,6 +30,7 @@ class TestThing(TestCase):
     def test_splat(self):
 
         comp = BitComp()
+        comp.set_mode(2)
         comp.set_mask("000000000000000000000000000000X1001X")
 
         expected = [26, 27, 58, 59]
