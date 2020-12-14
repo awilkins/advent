@@ -1,7 +1,17 @@
-from bitarray import bitarray
 from itertools import repeat
 from typing import Dict, List
 
+
+def make_mask(x: str, mask: str):
+    m_trans = "01X"
+    if x == "0":
+        output = "100"
+    else:
+        output = "010"
+    mask_str = mask.translate(
+        str.maketrans(m_trans, output)
+    )
+    return int(mask_str, 2)
 
 class BitComp:
 
@@ -17,19 +27,6 @@ class BitComp:
         # 40 bits is easier 'cos you can't convert half a byte from an int
         mask = f"0000{mask}"
 
-        def make_mask(x: str):
-            m_trans = "01X"
-            if x == "0":
-                output = "100"
-            else:
-                output = "010"
-            mask_str = mask.translate(
-                str.maketrans(m_trans, output)
-            )
-            return bitarray(mask_str)
-
-        self.mask = mask
-
         self.floating_positions = []
         for ii in range(40):
             if mask[ii] == "X":
@@ -37,22 +34,19 @@ class BitComp:
 
         self.floating_count = sum([1 for c in mask if c == "X"])
 
-        self.zeroes_mask = make_mask("0")
-        self.ones_mask = make_mask("1")
+        self.zeroes_mask = make_mask("0", mask)
+        self.ones_mask = make_mask("1", mask)
 
 
     def maskval(self, value: int):
-        bval = bitarray(endian="big")
-        bval.frombytes(value.to_bytes(5, byteorder="big"))
-
-        # bval is _40_ bits not 36
+        bval = value
 
         # make a mask of zeroes - these zero bits out regardless (NOT)
         zval = bval & ~self.zeroes_mask
         # make a mask of ones - these set bits regardless (OR)
         oval = zval | self.ones_mask
 
-        ival = int.from_bytes(oval.tobytes(), "big")
+        ival = oval
         return ival
 
 
@@ -66,8 +60,7 @@ class BitComp:
     def splat(self, address: int, value: int) -> List[int]:
         """ returns the list of splatted addresses """
 
-        address_bits = bitarray()
-        address_bits.frombytes(address.to_bytes(5, byteorder="big"))
+        address_bits = address
         masked_address = address_bits | self.ones_mask
 
         float_high = 2 ** self.floating_count
@@ -75,11 +68,16 @@ class BitComp:
         addresses = []
         for floatbits in range(float_high):
             bfloat = bin(floatbits)[2:].zfill(self.floating_count)
-            new_address = masked_address.copy()
+
+            address_bits = list(bin(masked_address)[2:].zfill(40))
+
             for ii in range(len(bfloat)):
-                new_address[self.floating_positions[ii]] = int(bfloat[ii], 2)
+                address_bits[self.floating_positions[ii]] = bfloat[ii]
+
+            new_address = int("".join(address_bits), 2)
+
             addresses.append(
-                int.from_bytes(new_address.tobytes(), "big")
+                new_address
             )
         for addr in addresses:
             try:
