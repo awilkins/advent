@@ -9,7 +9,7 @@ DAY="15"
 from advent.day_15.memory_game import *
 
 
-class TestThing(TestCase):
+class TestMemory(TestCase):
 
     def test_example_1(self):
         numbers = "0,3,6"
