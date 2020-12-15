@@ -37,7 +37,7 @@ class TestThing(TestCase):
         expected = 1009
         self.assertEqual(expected, answer)
 
-    @skip("way too slow")
+    #@skip("way too slow")
     def test_part_2(self):
         tests = [
             ("0,3,6", 175594),
