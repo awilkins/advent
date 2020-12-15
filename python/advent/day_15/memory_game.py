@@ -1,20 +1,20 @@
 
 from collections import deque
-from typing import Deque, Dict
+from typing import Deque, Dict, List, Tuple
 
 
-def speak(number, numbers: Dict[int, Deque[int]], count) -> int:
+def speak(number, numbers: Dict[int, List[int]], count: int) -> int:
 
     next_number = 0
 
-    q = numbers.get(number, deque(maxlen=2))
+    q = numbers.get(number, [0, 0])
 
-    if len(q) == 2:
+    if q[0] and q[1]:
         next_number = q[1] - q[0]
 
-    q = numbers.get(next_number, deque(maxlen=2))
-    q.append(count)
-    numbers[next_number] = q
+    q = numbers.get(next_number, [0, 0])
+    q[0] = q[1]
+    q[1] = count
 
     return next_number
 
@@ -23,13 +23,10 @@ def play(number_list: str, max_count=2020):
 
     starting_numbers = [int(n) for n in number_list.split(',')]
 
-    numbers = {
-        number: deque(maxlen=2) for number in
-        starting_numbers
-    }
+    numbers: Dict[int, List[int]] = {}
 
     for ii in range(len(starting_numbers)):
-        numbers[starting_numbers[ii]].append(ii + 1)
+        numbers[starting_numbers[ii]] = [0, ii + 1]
 
     if max_count <= len(starting_numbers): return 0
     last_number = starting_numbers[-1]
