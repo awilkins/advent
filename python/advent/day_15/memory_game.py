@@ -1,20 +1,27 @@
 
+from itertools import repeat
 from collections import deque
 from typing import Deque, Dict, List, Tuple
 
 
-def speak(number, numbers: Dict[int, List[int]], count: int) -> int:
+numbers = None
+
+def speak(number, numbers: List[int], count: int) -> int:
 
     next_number = 0
+    index0 = number * 2
+    index1 = index0 + 1
 
-    q = numbers.get(number, [0, 0])
+    q0 = numbers[index0] # , [0, 0])
+    q1 = numbers[index1] # , [0, 0])
 
-    if q[0] and q[1]:
-        next_number = q[1] - q[0]
+    if q0 and q1:
+        next_number = q1 - q0
 
-    q = numbers.get(next_number, [0, 0])
-    q[0] = q[1]
-    q[1] = count
+    index0 = next_number * 2
+    index1 = index0 + 1
+    numbers[index0] = numbers[index1]
+    numbers[index1] = count
 
     return next_number
 
@@ -23,10 +30,13 @@ def play(number_list: str, max_count=2020):
 
     starting_numbers = [int(n) for n in number_list.split(',')]
 
-    numbers: Dict[int, List[int]] = {}
+    numbers: List[int] = list(
+        repeat(0, 60000000)
+    )
 
     for ii in range(len(starting_numbers)):
-        numbers[starting_numbers[ii]] = [0, ii + 1]
+        numbers[ 2 * starting_numbers[ii]] = 0
+        numbers[ 2 * starting_numbers[ii] + 1] = ii + 1
 
     if max_count <= len(starting_numbers): return 0
     last_number = starting_numbers[-1]
