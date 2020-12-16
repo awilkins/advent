@@ -1,39 +1,37 @@
 
+from array import array
 from itertools import repeat
 from typing import Generator, List
 
 
-def next_number(starting_numbers: List[int]) -> Generator[int, None, None]:
+def next_number(starting_numbers: List[int], max_count: int) -> int:
     count = 0
-    number: List[int] = list(repeat(0, 30_000_000))
+    number = array('L', repeat(0, max_count))
 
     last_number = 0
     for n in starting_numbers:
         count += 1
         number[n] = count
         last_number = n
-        yield n
+        # yield n
 
-    while True:
+    while count < max_count:
         next_number = 0
-        if number[last_number] > 0:
+        if number[last_number] != 0:
             next_number = count - number[last_number]
         number[last_number] = count
         count += 1
         last_number = next_number
-        yield next_number
+        # yield next_number
+
+    return last_number
 
 
 def play(number_list: str, max_count=2020):
 
     numbers = [int(n) for n in number_list.split(',')]
 
-    count = 0
-
-    for n in next_number(numbers):
-        count += 1
-        if count == max_count:
-            return n
+    return next_number(numbers, max_count)
 
 
 def main():

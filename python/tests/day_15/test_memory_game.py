@@ -31,16 +31,16 @@ class TestMemory(TestCase):
         self.assertEqual(expected, answer)
 
 
-    def test_next(self):
+    # def test_next(self):
 
-        numbers = [0, 3, 6, 0, 3, 3, 1, 0, 4, 0]
+    #     numbers = [0, 3, 6, 0, 3, 3, 1, 0, 4, 0]
 
-        ii = 0
-        next_list = next_number(numbers[0:3])
-        for n in next_list:
-            self.assertEqual(n, numbers[ii], f"ii = {ii}")
-            ii += 1
-            if ii >= len(numbers): break
+    #     ii = 0
+    #     next_list = next_number(numbers[0:3])
+    #     for n in next_list:
+    #         self.assertEqual(n, numbers[ii], f"ii = {ii}")
+    #         ii += 1
+    #         if ii >= len(numbers): break
 
 
     # @skip("way too slow")
