@@ -1,7 +1,7 @@
 
 from array import array
 from itertools import repeat
-from typing import Generator, List
+from typing import List
 
 
 def next_number(starting_numbers: List[int], max_count: int) -> int:
@@ -17,8 +17,9 @@ def next_number(starting_numbers: List[int], max_count: int) -> int:
 
     while count < max_count:
         next_number = 0
-        if number[last_number] != 0:
-            next_number = count - number[last_number]
+        n = number[last_number]
+        if n != 0:
+            next_number = count - n
         number[last_number] = count
         count += 1
         last_number = next_number
