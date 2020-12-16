@@ -1,12 +1,11 @@
 use std::fs;
+use std::env;
+use std::io;
 
-pub fn get_resource(name: &str) -> Split<String> {
-  match fs::read_to_string("../resources/".to_owned() + name) {
-    Ok(lines) => {
-      return lines.split("\n");
-    }
-    Err(why) => {
-      eprint!("{}", why);
-    }
-  }
+pub fn get_resource(name: &str) -> io::Result<String> {
+  let mut cwd = env::current_dir()?;
+  cwd.push("..");
+  cwd.push("resources");
+  cwd.push(name);
+  return fs::read_to_string(cwd);
 }

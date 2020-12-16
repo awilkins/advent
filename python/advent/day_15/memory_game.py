@@ -18,8 +18,10 @@ def next_number(starting_numbers: List[int], max_count: int) -> int:
     while count < max_count:
         next_number: int = 0
         n: int = number[last_number]
+
         if n != 0:
             next_number = count - n
+
         number[last_number] = count
         count += 1
         last_number = next_number
