@@ -5,10 +5,10 @@ from typing import List
 
 
 def next_number(starting_numbers: List[int], max_count: int) -> int:
-    count = 0
+    count: int = 0
     number = array('L', repeat(0, max_count))
 
-    last_number = 0
+    last_number: int = 0
     for n in starting_numbers:
         count += 1
         number[n] = count
@@ -16,8 +16,8 @@ def next_number(starting_numbers: List[int], max_count: int) -> int:
         # yield n
 
     while count < max_count:
-        next_number = 0
-        n = number[last_number]
+        next_number: int = 0
+        n: int = number[last_number]
         if n != 0:
             next_number = count - n
         number[last_number] = count
