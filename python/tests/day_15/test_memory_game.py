@@ -11,22 +11,15 @@ from advent.day_15.memory_game import *
 
 class TestMemory(TestCase):
 
+
     def test_example_1(self):
         numbers = "0,3,6"
-
-        tests = [
-            0, 0, 0, 0, 3, 3, 1, 0, 4, 0
-        ]
-        for ii in range(len(tests)):
-            with self.subTest(n=ii):
-                expected = tests[ii]
-                actual = play(numbers, ii + 1)
-                self.assertEqual(expected, actual, f"Index : {ii}")
 
         expected = 436
         actual = play(numbers)
 
         self.assertEqual(expected, actual)
+
 
     def test_answer_1(self):
         input_lines = "2,0,1,9,5,19"
@@ -37,7 +30,20 @@ class TestMemory(TestCase):
         expected = 1009
         self.assertEqual(expected, answer)
 
-    #@skip("way too slow")
+
+    def test_next(self):
+
+        numbers = [0, 3, 6, 0, 3, 3, 1, 0, 4, 0]
+
+        ii = 0
+        next_list = next_number(numbers[0:3])
+        for n in next_list:
+            self.assertEqual(n, numbers[ii], f"ii = {ii}")
+            ii += 1
+            if ii >= len(numbers): break
+
+
+    # @skip("way too slow")
     def test_part_2(self):
         tests = [
             ("0,3,6", 175594),
@@ -51,7 +57,7 @@ class TestMemory(TestCase):
 
         for numbers, expected in tests:
             with self.subTest(numbers=numbers, expected=expected):
-                actual = play(numbers, 30000000)
+                actual = play(numbers, 30_000_000)
                 self.assertEqual(expected, actual)
 
     # def test_answer_2(self):
