@@ -80,7 +80,7 @@ class TestThing(TestCase):
 
         print(f'\nAnswer 2 : {answer}\n')
 
-        expected = 848
+        expected = 1792
         self.assertEqual(expected, answer)
 
 
