@@ -72,13 +72,8 @@ class CubeSpace:
         high_z = max([z for _, _, z, _ in self.space])
         high_w = max([w for _, _, _, w in self.space])
 
-
-        w_range = [0]
-        if self.dimensions == 4:
-            w_range = range(low_w, high_w + 1)
-
         metaplanes = []
-        for ww in w_range:
+        for ww in range(low_w, high_w + 1):
             planes = []
             for zz in range(low_z, high_z + 1):
 
