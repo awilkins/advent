@@ -53,10 +53,7 @@ class CubeSpace:
 
         for coord, count in activity.items():
 
-            if (2 <= count and count <= 3) and coord in current_space:
-                next_space.add(coord)
-
-            if count == 3 and coord not in current_space:
+            if count == 3 or (count == 2 and coord in current_space):
                 next_space.add(coord)
 
         return CubeSpace(list(next_space), self.dimensions)
