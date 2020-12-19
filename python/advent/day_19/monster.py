@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Generator, List, Literal, NewType, Tuple, Union
+from typing import Dict, Generator, List, Literal, NewType, Tuple, Union
 
 Rule = NewType("Rule", Union[
     Literal["a"],
@@ -16,15 +16,24 @@ def convert_to_int(message: str) -> int:
     return int(message.translate(BINARY), 2)
 
 
-def possible_messages(rules: List[Rule], rule: Rule, stem: str = "") -> Generator[str]:
+def patch(rules):
+
+    rules[8] = (
+        [42], [42, 8]
+    )
+
+    rules[11] = (
+        [42, 31], [42, 11, 31]
+    )
+
+
+def possible_messages(rules: Dict[int, Rule], rule: Rule, stem: str = "", stack: List[int] = []) -> Generator[str]:
 
     if rule == "a" or rule == "b":
         yield f'{stem}{rule}'
         return
 
     if isinstance(rule, List):
-        if len(rule) == 0:
-            return
 
         next_rule = rules[rule[0]]
         for next_stem in possible_messages(rules, next_rule, stem):
@@ -43,34 +52,30 @@ def possible_messages(rules: List[Rule], rule: Rule, stem: str = "") -> Generato
     yield from possible_messages(rules, rule1, stem)
 
 
-def parse_input(lines: List[str]) -> Tuple[List[Rule], List[str]]:
+def parse_input(lines: List[str]) -> Tuple[Dict[Rule], List[str]]:
 
     ii = 0
-    rules: List[Tuple[int, str]] = []
+    rules: Dict[int, str] = {}
     line = lines[ii]
     while len(line) > 0:
         index, rule = line.split(':')
         index = int(index)
-        rules.append((index, rule.strip()))
+        rules[index] = rule.strip()
         ii +=1
         line = lines[ii]
 
-    rules.sort()
-    new_rules: List[Rule] = []
-    last_index = -1
-    for index, rule in rules:
+    new_rules: Dict[int, Rule] = {}
+    for index, rule in rules.items():
         index = int(index)
-        assert last_index == index - 1
-        last_index = index
         if '|' in rule:
             rule_lists: List[str] = rule.split('|')
             rule0 = list(int(r) for r in rule_lists[0].strip().split(' '))
             rule1 = list(int(r) for r in rule_lists[1].strip().split(' '))
-            new_rules.append((rule0, rule1))
+            new_rules[index]  = (rule0, rule1)
         elif '"' in rule:
-            new_rules.append(rule.strip()[1])
+            new_rules[index] = rule.strip()[1]
         else:
-            new_rules.append([int(r) for r in rule.split(' ')])
+            new_rules[index] = [int(r) for r in rule.split(' ')]
 
     ii += 1
     messages = []
