@@ -67,9 +67,9 @@ class Puzzle:
             ii += 1
 
 
-    def find_corners(self) -> List[Tile]:
+    def find_edges(self, edginess = 1) -> List[Tile]:
 
-        corners = []
+        edges = []
         # Do I have 2 borders that don't match other tiles?
         for index, tile in self.tiles.items():
             unmatched_count = 0
@@ -87,10 +87,14 @@ class Puzzle:
 
                 if not matched:
                     unmatched_count += 1
-            if unmatched_count == 2:
-                corners.append(tile)
+            if unmatched_count == edginess:
+                edges.append(tile)
 
-        return corners
+        return edges
+
+
+    def find_corners(self):
+        return self.find_edges(edginess = 2)
 
 
 

@@ -71,9 +71,23 @@ class TestThing(TestCase):
 
         self.assertEqual(20899048083289, product)
 
+
+    def test_find_edges(self):
+        lines = get_resource(f'day_{DAY}/example_1.txt').read_text().splitlines()
+        puzzle = Puzzle(lines)
+
+        edges = puzzle.find_edges()
+        self.assertEqual(4, len(edges))
+
+        # Main puzzle is 144 tiles, 12 square, so 40 edges
+        lines = get_resource(f'day_{DAY}/input.txt').read_text().splitlines()
+        puzzle = Puzzle(lines)
+
+        edges = puzzle.find_edges()
+        self.assertEqual(40, len(edges))
+
     def test_answer_1(self):
         lines = get_resource(f'day_{DAY}/input.txt').read_text().splitlines()
-
         puzzle = Puzzle(lines)
 
         corners = puzzle.find_corners()
