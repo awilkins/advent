@@ -94,6 +94,7 @@ class Tile:
         ])
 
     def flip_h(self):
+        """ Flip along the horizontal axis (top becomes bottom) """
         self.borders = [
             self.borders[BOTTOM],
             flipped(self.borders[RIGHT]),
@@ -110,6 +111,7 @@ class Tile:
 
 
     def flip_v(self):
+        """ Flip alone the vertical axis (left becomes right) """
         self.borders = [
             flipped(self.borders[TOP]),
             self.borders[LEFT],
@@ -129,16 +131,16 @@ class Tile:
         ii = 0
         while ii < count:
             self.borders = [
-                self.borders[RIGHT],
-                self.borders[BOTTOM],
                 self.borders[LEFT],
                 self.borders[TOP],
+                self.borders[RIGHT],
+                self.borders[BOTTOM],
             ]
             self.edges = [
-                self.edges[RIGHT],
-                self.edges[BOTTOM],
                 self.edges[LEFT],
                 self.edges[TOP],
+                self.edges[RIGHT],
+                self.edges[BOTTOM],
             ]
             ii += 1
 
@@ -348,6 +350,13 @@ class Puzzle:
                         next_tile.rotate(2)
                         next_tile.flip_v()
                     assert next_tile.edges[BOTTOM]
+                else:
+                    upper_tile = matrix[yy - 1][xx]
+                    if upper_tile.borders[BOTTOM] != next_tile.borders[TOP]:
+                        next_tile.rotate(2)
+                        next_tile.flip_v()
+                    assert upper_tile.borders[BOTTOM] == next_tile.borders[TOP]
+
 
                 if xx == 0:
                     if not next_tile.edges[LEFT]:
@@ -362,8 +371,15 @@ class Puzzle:
 
                 matrix[yy][xx] = next_tile
 
-        return matrix
+        for yy in range(1, puzzle_size - 1):
+            for xx in range(1, puzzle_size - 1):
+                tile = matrix[yy][xx]
+                assert tile.borders[TOP] == matrix[yy - 1][xx].borders[BOTTOM]
+                assert tile.borders[BOTTOM] == matrix[yy + 1][xx].borders[TOP]
+                assert tile.borders[LEFT] == matrix[yy][xx - 1].borders[RIGHT]
+                assert tile.borders[RIGHT] == matrix[yy][xx + 1].borders[LEFT]
 
+        return matrix
 
 
 
