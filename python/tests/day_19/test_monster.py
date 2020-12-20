@@ -1,6 +1,7 @@
 from unittest import TestCase
+from unittest.case import skip
 
-from ..util import get_resource
+from tests.util import get_resource
 
 DAY="19"
 
@@ -84,7 +85,8 @@ class TestThing(TestCase):
         self.assertListEqual(expected, actual)
 
 
-    def test_answer_1(self):
+# @skip('too slow')
+def test_answer_1(self):
         input_lines = get_resource(f'day_{DAY}/input.txt').read_text().splitlines()
 
         rules, messages = parse_input(input_lines)
@@ -95,8 +97,8 @@ class TestThing(TestCase):
 
         print(f'\nAnswer 1 : {answer}\n')
 
-        # expected =
-        # self.assertEqual(expected, answer)
+        expected = 195
+        self.assertEqual(expected, answer)
 
     # def test_answer_2(self):
     #     input_lines = get_resource(f'day_{DAY}/input.txt').read_text().splitlines()
