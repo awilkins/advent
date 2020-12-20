@@ -73,22 +73,6 @@ class TestPuzzle(TestCase):
         self.assertEqual(20899048083289, product)
 
 
-    def test_find_edges(self):
-        lines = get_resource(f'day_{DAY}/example_1.txt').read_text().splitlines()
-        puzzle = Puzzle(lines)
-
-        edges = puzzle.find_edges()
-        self.assertEqual(4, len(edges))
-
-        # Main puzzle is 144 tiles, 12 square, so 40 edges
-        lines = get_resource(f'day_{DAY}/input.txt').read_text().splitlines()
-        puzzle = Puzzle(lines)
-
-        corners = puzzle.find_corners()
-        self.assertEqual(4, len(corners))
-        edges = puzzle.find_edges()
-        self.assertEqual(40, len(edges))
-
     def test_answer_1(self):
         lines = get_resource(f'day_{DAY}/input.txt').read_text().splitlines()
         puzzle = Puzzle(lines)
@@ -106,58 +90,63 @@ class TestPuzzle(TestCase):
         expected = 7901522557967
         self.assertEqual(expected, answer)
 
-
-    def test_solve_edges(self):
-        lines = get_resource(f'day_{DAY}/example_1.txt').read_text().splitlines()
-        puzzle = Puzzle(lines)
-
-        row = puzzle.solve_edge(puzzle.tiles[1951], puzzle.find_edges(), puzzle.find_corners())
-        expected = [ 1951, 2311, 3079 ]
-        actual = list(tile.id for tile in row)
+    def test_rotate(self):
+        original = [
+            [ 1951, 2311, 3079 ],
+            [ 2729, 1427, 2473 ],
+            [ 2971, 1489, 1171 ],
+        ]
+        expected = [
+            [ 2971, 2729, 1951 ],
+            [ 1489, 1427, 2311 ],
+            [ 1171, 2473, 3079 ],
+        ]
+        actual = rotate(original)
         self.assertListEqual(expected, actual)
+        
 
-        edges = puzzle.solve_edges()
+    def test_solve_matrix_positions(self):
         expected = [
-            [1951, 2311, 3079],
-            [3079, 2473, 1171],
-            [1171, 1489, 2971],
-            [2971, 2729, 1951],
+            [ 1951, 2311, 3079 ],
+            [ 2729, 1427, 2473 ],
+            [ 2971, 1489, 1171 ],
         ]
-        edge_ids = list([
-           t.id for t in edge
-        ] for edge in edges)
-        self.assertListEqual(expected, edge_ids)
 
-
-    def test_matrix(self):
         lines = get_resource(f'day_{DAY}/example_1.txt').read_text().splitlines()
         puzzle = Puzzle(lines)
-        edges = puzzle.solve_edges()
+        puzzle.find_corners()
+        puzzle.find_edges()
+        actual = puzzle.solve_matrix(puzzle.tiles[1951]) 
+        tile_ids = list(list(
+           t.id for t in row
+        ) for row in actual)
+        tile_ids = rotate(tile_ids)
+        tile_ids = flip_v(tile_ids)
+        self.assertListEqual(expected, tile_ids)
 
-        expected = [
-            [1951, 2311, 3079],
-            [2729, -1  , 2473],
-            [2971, 1489, 1171],
-        ]
-        matrix = puzzle.get_matrix(edges)
-        matrix_ids = list([
-            t.id for t in matrix_row
-        ] for matrix_row in matrix)
-        self.assertListEqual(expected, matrix_ids)
 
-        puzzle.solve_matrix(edges, matrix)
-        expected[1][1] = 1427
-        matrix_ids = list([
-            t.id for t in matrix_row
-        ] for matrix_row in matrix)
-        self.assertListEqual(expected, matrix_ids)
+    # def test_solve_edges(self):
+    #     lines = get_resource(f'day_{DAY}/example_1.txt').read_text().splitlines()
+    #     puzzle = Puzzle(lines)
+
+    #     edges = puzzle.solve_edges()
+    #     expected = [
+    #         [1951, 2729, 2971],
+    #         [2971, 1489, 1171],
+    #         [1171, 2473, 3079],
+    #         [3079, 2311, 1951],
+    #     ]
+    #     edge_ids = list([
+    #        t.id for t in edge
+    #     ] for edge in edges)
+    #     for l in edge_ids: print(l)
+    #     self.assertListEqual(expected, edge_ids)
 
 
     def test_answer_2(self):
         lines = get_resource(f'day_{DAY}/input.txt').read_text().splitlines()
         puzzle = Puzzle(lines)
 
-        puzzle.solve()
 
         # answer =
         # print(f'\nAnswer 2 : {answer}\n')

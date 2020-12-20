@@ -3,17 +3,35 @@ from __future__ import annotations
 from math import sqrt
 from itertools import chain, repeat
 
-from typing import Dict, List, Set
+from typing import Any, Dict, List, Set, Tuple, no_type_check
 
 
 TILE_SIZE = 10
 
+LEFT = 3
+RIGHT = 1
+TOP = 0
+BOTTOM = 2
+
+VERTICAL = 0
+HORIZONTAL = 1
 
 BITS = str.maketrans('.#', '01')
 
 def pixels_int(pixels: str) -> int:
     bits = pixels.translate(BITS)
     return int(bits, 2)
+
+def rotate(original: List[List[Any]]):
+    rotated = list(zip(*original[::-1]))
+    return list(
+        list(t) for t in rotated
+    )
+
+def flip_v(original: List[List[Any]]):
+    return list(
+        row[::-1] for row in original
+    )
 
 
 def flipped(value: int, bitsize: int = TILE_SIZE) -> int:
@@ -49,12 +67,10 @@ class Tile:
                 self.pixels[y][0] for y in range(10)
             ])
         ))
-        self.flipped_borders = list([
-            flipped(border) for border in self.borders
-        ])
+        self._update_flipped()
 
 
-    def find_matches(self, others: List[Tile]) -> List[Tile]:
+    def find_matches(self, others: List[Tile]) -> List[Tuple[int, Tile]]:
 
         matches = []
         for tile in others:
@@ -62,13 +78,82 @@ class Tile:
                 continue
             for border in self.borders:
                 if border in tile.borders or border in tile.flipped_borders:
-                    matches.append(tile)
+                    matches.append(
+                        (border, tile)
+                    )
 
         return matches
+
 
     def __str__(self) -> str:
         return f"Tile {self.id}"
 
+    def _update_flipped(self):
+        self.flipped_borders = list([
+            flipped(border) for border in self.borders
+        ])
+
+    def flip_h(self):
+        self.borders = [
+            self.borders[BOTTOM],
+            flipped(self.borders[RIGHT]),
+            self.borders[TOP],
+            flipped(self.borders[LEFT]),
+        ]
+        self.edges = [
+            self.edges[BOTTOM],
+            self.edges[RIGHT],
+            self.edges[TOP],
+            self.edges[LEFT],
+        ]
+        self._update_flipped()
+
+
+    def flip_v(self):
+        self.borders = [
+            flipped(self.borders[TOP]),
+            self.borders[LEFT],
+            flipped(self.borders[BOTTOM]),
+            self.borders[RIGHT],
+        ]
+        self.edges = [
+            self.edges[TOP],
+            self.edges[LEFT],
+            self.edges[BOTTOM],
+            self.edges[RIGHT],
+        ]
+        self._update_flipped()
+
+
+    def rotate(self, count = 1):
+        ii = 0
+        while ii < count:
+            self.borders = [
+                self.borders[RIGHT],
+                self.borders[BOTTOM],
+                self.borders[LEFT],
+                self.borders[TOP],
+            ]
+            self.edges = [
+                self.edges[RIGHT],
+                self.edges[BOTTOM],
+                self.edges[LEFT],
+                self.edges[TOP],
+            ]
+            ii += 1
+
+        self._update_flipped()
+
+    def align(self, value, border=LEFT):
+        if value not in self.borders:
+            axis = self.flipped_borders.index(value) % 2
+            if axis == VERTICAL:
+                self.flip_v()
+            else:
+                self.flip_h()
+
+        while self.borders[border] != value:
+            self.rotate()
 
 class NullTile(Tile):
 
@@ -76,12 +161,14 @@ class NullTile(Tile):
         self.id = -1
 
 EMPTY = NullTile()
+
 class Puzzle:
 
     def __init__(self, lines: List[str]) -> None:
 
         ii = 0
         self.tiles: Dict[int, Tile] = {}
+        self.borders: Dict[int, List[Tile]] = {}
         while ii < len(lines):
             tile_lines = []
             line = lines[ii]
@@ -91,7 +178,20 @@ class Puzzle:
                 line = lines[ii]
             tile = Tile(tile_lines)
             self.tiles[tile.id] = tile
+            for border in tile.borders:
+                tiles = self.borders[border] = self.borders.get(border, [])
+                tiles.append(tile)
+                # All border IDs are pairs only
+                assert len(tiles) < 3
+            for border in tile.flipped_borders:
+                tiles = self.borders[border] = self.borders.get(border, [])
+                tiles.append(tile)
+                # All border IDs are pairs only
+                assert len(tiles) < 3
+
             ii += 1
+        corners = self.find_corners()
+        self.matrix = self.solve_matrix(corners[0])
 
 
     def find_edges(self, edginess = 1) -> List[Tile]:
@@ -126,36 +226,31 @@ class Puzzle:
         return self.find_edges(edginess = 2)
 
 
-    def solve_edge(self, start: Tile, remaining_edges: List[Tile], remaining_corners: List[Tile]) -> List[Tile]:
+    def solve_edge(self, start: Tile) -> List[Tile]:
+        # Check it's really a corner
+        assert sum(start.edges) == 2
+        puzzle_size = sqrt(len(self.tiles))
+        row: List[Tile] = []
+        row.append(start)
+        # rotate corner so that it's top left
+        while not (start.edges[TOP] and start.edges[LEFT]):
+            start.rotate()
 
-        top_row: List[Tile] = []
-        # Arbitrary pick for top corner
-        top_row.append(start)
-        remaining_corners.remove(top_row[0])
-
-        matches = top_row[0].find_matches(remaining_edges)
-
-        # Filter matches : matched edge must be next to unused edge
-        top_row.append(matches[0])
-
-        remaining_edges.remove(top_row[1])
-
-        puzzle_size = int(sqrt(len(self.tiles)))
-        edge_size = puzzle_size - 2
+        last_tile = start
         xx = 1
-        while xx < edge_size:
-            matches = top_row[1].find_matches(remaining_edges)
-            assert len(matches) == 1
-            top_row.append(matches[0])
+        while xx < puzzle_size:
+            next_tiles = [tile for tile in self.borders[last_tile.borders[RIGHT]] if tile is not last_tile]
+            assert len(next_tiles) == 1
+            next_tile = next_tiles[0]
+            row.append(next_tile)
+            next_tile.align(last_tile.borders[RIGHT])
+            last_tile = next_tile
             xx += 1
 
-        # Finally the corner
-        matches = top_row[-1].find_matches(remaining_corners)
+        # Check end is a corner
+        assert sum(row[-1].edges) == 2
 
-        assert len(matches) == 1
-        top_row.append(matches[0])
-
-        return top_row
+        return row
 
     def solve_edges(self):
 
@@ -171,21 +266,12 @@ class Puzzle:
         solved_edges: List[List[Tile]] = []
 
         next_corner = first_corner
-        for _ in range(3):
-            edge = self.solve_edge(
-                next_corner,
-                edges,
-                corners,
+        while len(solved_edges) < 4:
+            solved_edges.append(
+                self.solve_edge(next_corner)
             )
-            solved_edges.append(edge)
-            next_corner = edge[-1]
-        # last edge
-        corners.append(first_corner)
-        solved_edges.append(self.solve_edge(
-            next_corner,
-            edges,
-            corners,
-        ))
+            next_corner = solved_edges[-1][-1]
+            next_corner.rotate(LEFT)
 
         return solved_edges
 
@@ -216,75 +302,67 @@ class Puzzle:
         return count
 
 
-    def solve_matrix(self, edges: List[List[Tile]], matrix: List[List[Tile]]):
+    def solve_matrix(self, start: Tile):
 
         puzzle_size = int(sqrt(len(self.tiles)))
-        remaining_tiles = list(self.tiles.values())
-        for edge in edges:
-            for tile in edge:
-                if tile in remaining_tiles:
-                    remaining_tiles.remove(tile)
 
+        matrix: List[List[Tile]] = []
+        for _ in range(puzzle_size):
+            matrix.append(
+                list(repeat(EMPTY, puzzle_size))
+            )
 
-        last_count = self.count_empty_squares(matrix)
-        while last_count > 0:
-            for yy in range(1, puzzle_size - 1):
-                for xx in range(1, puzzle_size - 1):
+        while not (start.edges[LEFT] and start.edges[TOP]):
+            start.rotate()
 
-                    tile: Tile = matrix[yy][xx]
-                    if tile is not EMPTY:
-                        continue
+        matrix[0][0] = start
 
-                    neighbours = [
-                        matrix[yy    ][xx - 1], # To the left ...
-                        matrix[yy    ][xx + 1], # To the right ...
-                        matrix[yy + 1][xx    ], # Underneath ...
-                        matrix[yy - 1][xx    ], # Up above ...
-                    ] # Outta sight....
+        for yy in range(puzzle_size):
+            for xx in range(puzzle_size):
+                tile = matrix[yy][xx]
+                if tile is not EMPTY:
+                    continue
 
-                    neighbours = [
-                        ntile for ntile in neighbours
-                        if not ntile is tile and not ntile is EMPTY
-                    ]
+                if xx == 0:
+                    last_tile = matrix[yy - 1][xx]
+                    last_border = last_tile.borders[BOTTOM]
+                    alignment_border = TOP
+                else:
+                    last_tile = matrix[yy][xx - 1]
+                    last_border = last_tile.borders[RIGHT]
+                    alignment_border = LEFT
 
-                    potential_tiles = []
-                    for rtile in remaining_tiles:
-                        matches = rtile.find_matches(neighbours)
+                matches = list(t for t in self.borders[last_border] if t is not last_tile)
+                assert len(matches) == 1
+                next_tile = matches[0]
+                next_tile.align(last_border, alignment_border)
 
-                        if len(matches) == len(neighbours):
-                            potential_tiles.append(rtile)
+                # check edges
+                if yy == 0:
+                    if not next_tile.edges[TOP]:
+                        next_tile.rotate(2)
+                        next_tile.flip_v()
+                    assert next_tile.edges[TOP]
+                elif yy == puzzle_size - 1:
+                    if not next_tile.edges[BOTTOM]:
+                        next_tile.rotate(2)
+                        next_tile.flip_v()
+                    assert next_tile.edges[BOTTOM]
 
-                    if len(potential_tiles) == 1:
-                        found_tile = potential_tiles[0]
-                        matrix[yy][xx] = found_tile
-                        remaining_tiles.remove(found_tile)
+                if xx == 0:
+                    if not next_tile.edges[LEFT]:
+                        next_tile.rotate(2)
+                        next_tile.flip_h()
+                    assert next_tile.edges[LEFT]
+                if xx == puzzle_size -1:
+                    if not next_tile.edges[RIGHT]:
+                        next_tile.rotate(2)
+                        next_tile.flip_h()
+                    assert next_tile.edges[RIGHT]
 
-            new_count = self.count_empty_squares(matrix)
-            if new_count == last_count:
-                raise RuntimeError("No progress!")
-            last_count = new_count
+                matrix[yy][xx] = next_tile
 
-    def solve(self):
-
-        edges = self.solve_edges()
-        matrix = self.get_matrix(edges)
-        self.solve_matrix(edges, matrix)
-
-        assert self.count_empty_squares(matrix) == 0
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        return matrix
 
 
 
