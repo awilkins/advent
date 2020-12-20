@@ -49,6 +49,41 @@ class TestPuzzle(TestCase):
             498,
         ], tile.borders)
 
+    def test_tile_flip_h(self):
+        tile = Tile(TILE_2311.splitlines())
+
+        borders = tile.borders.copy()
+        flipped_borders = tile.flipped_borders.copy()
+
+        tile.flip_h()
+        assert tile.borders[TOP] == borders[BOTTOM]
+        assert tile.borders[BOTTOM] == borders[TOP]
+        assert tile.borders[LEFT] == flipped_borders[LEFT]
+        assert tile.borders[RIGHT] == flipped_borders[RIGHT]
+
+    def test_tile_flip_v(self):
+        tile = Tile(TILE_2311.splitlines())
+
+        borders = tile.borders.copy()
+        flipped_borders = tile.flipped_borders.copy()
+
+        tile.flip_v()
+        assert tile.borders[TOP] == flipped_borders[TOP]
+        assert tile.borders[BOTTOM] == flipped_borders[BOTTOM]
+        assert tile.borders[RIGHT] == borders[LEFT]
+        assert tile.borders[LEFT] == borders[RIGHT]
+
+
+    def test_tile_rotate(self):
+        tile = Tile(TILE_2311.splitlines())
+        borders = tile.borders.copy()
+
+        tile.rotate()
+        assert tile.borders[RIGHT] == borders[TOP]
+        assert tile.borders[BOTTOM] == borders[RIGHT]
+        assert tile.borders[LEFT] == borders[BOTTOM]
+        assert tile.borders[TOP] == borders[LEFT]
+
 
     def test_puzzle(self):
         lines = get_resource(f'day_{DAY}/example_1.txt').read_text().splitlines()
@@ -103,7 +138,7 @@ class TestPuzzle(TestCase):
         ]
         actual = rotate(original)
         self.assertListEqual(expected, actual)
-        
+
 
     def test_solve_matrix_positions(self):
         expected = [
@@ -116,7 +151,7 @@ class TestPuzzle(TestCase):
         puzzle = Puzzle(lines)
         puzzle.find_corners()
         puzzle.find_edges()
-        actual = puzzle.solve_matrix(puzzle.tiles[1951]) 
+        actual = puzzle.solve_matrix(puzzle.tiles[1951])
         tile_ids = list(list(
            t.id for t in row
         ) for row in actual)
