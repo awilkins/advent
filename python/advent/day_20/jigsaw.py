@@ -442,13 +442,23 @@ class Image:
         MONSTER_MASK = list(pixels_int(list(row)) for row in MONSTER)
         count = 0
 
-        for yy in range(len(self.pixels) - len(MONSTER)):
-            for xx in range(len(self.pixels[0])):
+        bottom_x = 0
+        bottom_y = 0
+
+        HEIGHT = len(MONSTER)
+        WIDTH = len(MONSTER[0])
+
+        for yy in range(len(self.pixels) - HEIGHT + 1):
+            for xx in range(len(self.pixels[0]) - WIDTH + 1):
                 window: List[List[str]] = [
-                    self.pixels[yy+0][xx:xx+len(MONSTER[0])],
-                    self.pixels[yy+1][xx:xx+len(MONSTER[0])],
-                    self.pixels[yy+2][xx:xx+len(MONSTER[0])],
+                    self.pixels[yy+0][xx:xx+WIDTH],
+                    self.pixels[yy+1][xx:xx+WIDTH],
+                    self.pixels[yy+2][xx:xx+WIDTH],
                 ]
+                bottom_x = max(bottom_x, xx+WIDTH)
+                bottom_y = max(bottom_y, yy + 2)
+                assert len(window[0]) == WIDTH
+                assert len(window) == HEIGHT
 
                 found = True
                 for index, row in enumerate(window):
@@ -459,18 +469,20 @@ class Image:
                         found = False
                         break
                 if found:
-                    for wy in range(len(MONSTER)):
-                        for wx in range(len(MONSTER[0])):
+                    for wy in range(HEIGHT):
+                        for wx in range(WIDTH):
                             if MONSTER[wy][wx] == '#':
                                 self.pixels[yy+wy][xx+wx] = 'O'
                     count += 1
 
+        assert bottom_x == len(self.pixels)
+        assert bottom_y == len(self.pixels) - 1
         return count
 
 
     def roughness(self) -> int:
         total_humps = sum(1 for p in chain(*self.pixels) if p == '#')
-        return total_humps# - (MONSTER_COUNT * self.find_monsters())
+        return total_humps
 
 
 def find_roughness(puzzle: Puzzle) -> int:
