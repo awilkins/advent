@@ -16,7 +16,7 @@ BOTTOM = 2
 VERTICAL = 0
 HORIZONTAL = 1
 
-BITS = str.maketrans('.# ', '010')
+BITS = str.maketrans('.# O', '0101')
 
 def pixels_int(pixels: List[str]) -> int:
     px = "".join(pixels)
@@ -145,6 +145,7 @@ class Tile:
 
     def flip_d(self):
         """ Flip along the diagonal axis """
+        # raise RuntimeError("Do not flip_d!")
         self.borders = [
             flipped(self.borders[1]),
             flipped(self.borders[0]),
@@ -337,7 +338,6 @@ class Puzzle:
                 next_tile = matches[0]
                 assert next_tile not in used_tiles
                 used_tiles.append(next_tile)
-                print(f'Used tile : {next_tile.id}')
 
                 next_tile.align(alignments)
 
@@ -425,7 +425,7 @@ class Image:
         count = 0
 
         for yy in range(len(self.pixels) - len(MONSTER)):
-            for xx in range(len(self.pixels[0]) - len(MONSTER[0])):
+            for xx in range(len(self.pixels[0])):
                 window: List[List[str]] = [
                     self.pixels[yy+0][xx:xx+len(MONSTER[0])],
                     self.pixels[yy+1][xx:xx+len(MONSTER[0])],
@@ -441,6 +441,10 @@ class Image:
                         found = False
                         break
                 if found:
+                    for wy in range(len(MONSTER)):
+                        for wx in range(len(MONSTER[0])):
+                            if MONSTER[wy][wx] == '#':
+                                self.pixels[yy+wy][xx+wx] = 'O'
                     count += 1
 
         return count
@@ -448,5 +452,33 @@ class Image:
 
     def roughness(self) -> int:
         total_humps = sum(1 for p in chain(*self.pixels) if p == '#')
-        return total_humps - (MONSTER_COUNT * self.find_monsters())
+        return total_humps# - (MONSTER_COUNT * self.find_monsters())
+
+
+def find_roughness(puzzle: Puzzle) -> int:
+
+    roughness = -1
+
+    for ii in range(4):
+        puzzle.rotate()
+        image = Image(puzzle)
+        if image.find_monsters():
+            return image.roughness()
+
+    puzzle.flip_h()
+    for ii in range(4):
+        puzzle.rotate()
+        image = Image(puzzle)
+        if image.find_monsters():
+            return image.roughness()
+
+    puzzle.flip_h()
+    puzzle.flip_v()
+    for ii in range(4):
+        puzzle.rotate()
+        image = Image(puzzle)
+        if image.find_monsters():
+            return image.roughness()
+
+    return roughness
 
