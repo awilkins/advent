@@ -216,6 +216,8 @@ class TestPuzzle(TestCase):
         image = Image(puzzle)
 
         self.assertListEqual(image.pixels[0], list(".####...#####..#...###.."))
+        image.find_monsters()
+
 
         expected = 273
         actual = image.roughness()
@@ -301,9 +303,13 @@ class TestPuzzle(TestCase):
         lines = get_resource(f'day_{DAY}/input.txt').read_text().splitlines()
         puzzle = Puzzle(lines)
 
+        answer = find_roughness(puzzle)
+        assert answer != -1
+        print(f'\nAnswer 2 : {answer}\n')
 
-        # answer =
-        # print(f'\nAnswer 2 : {answer}\n')
+        assert answer < 2521
+        assert answer > 2236
+
 
         # expected =
         # self.assertEqual(expected, answer)
