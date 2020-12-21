@@ -5,7 +5,7 @@ EXAMPLE_INPUT = """\
 class TestThing(TestCase):
 
     def test_example_1(self):
-        input_lines = EXAMPLE_INPUT.splitlines()
+        lines = EXAMPLE_INPUT.splitlines()
 
         expected =
         actual =
