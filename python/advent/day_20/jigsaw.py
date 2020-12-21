@@ -402,6 +402,8 @@ MONSTER = """\
  #  #  #  #  #  #...
 """.splitlines()
 
+MONSTER_COUNT = sum(1 for p in chain(*MONSTER) if p == '#')
+
 class Image:
 
     def __init__(self, puzzle: Puzzle):
@@ -444,5 +446,7 @@ class Image:
         return count
 
 
-
+    def roughness(self) -> int:
+        total_humps = sum(1 for p in chain(*self.pixels) if p == '#')
+        return total_humps - (MONSTER_COUNT * self.find_monsters())
 
