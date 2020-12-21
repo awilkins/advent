@@ -356,13 +356,31 @@ class Puzzle:
 
                 matrix[yy][xx] = next_tile
 
-        for yy in range(1, puzzle_size - 1):
-            for xx in range(1, puzzle_size - 1):
+        # Check puzzle is solved
+        for yy in range(0, puzzle_size):
+            for xx in range(0, puzzle_size):
                 tile = matrix[yy][xx]
-                assert tile.borders[TOP] == matrix[yy - 1][xx].borders[BOTTOM]
-                assert tile.borders[BOTTOM] == matrix[yy + 1][xx].borders[TOP]
-                assert tile.borders[LEFT] == matrix[yy][xx - 1].borders[RIGHT]
-                assert tile.borders[RIGHT] == matrix[yy][xx + 1].borders[LEFT]
+
+                if 0 < yy and yy < puzzle_size - 1:
+                    assert tile.borders[TOP] == matrix[yy - 1][xx].borders[BOTTOM]
+                    assert tile.borders[BOTTOM] == matrix[yy + 1][xx].borders[TOP]
+                elif yy == 0:
+                    assert tile.edges[TOP]
+                    assert tile.borders[BOTTOM] == matrix[yy + 1][xx].borders[TOP]
+                elif yy == puzzle_size - 1:
+                    assert tile.edges[BOTTOM]
+                    assert tile.borders[TOP] == matrix[yy - 1][xx].borders[BOTTOM]
+
+                if 0 < xx and xx < puzzle_size - 1:
+                    assert tile.borders[LEFT] == matrix[yy][xx - 1].borders[RIGHT]
+                    assert tile.borders[RIGHT] == matrix[yy][xx + 1].borders[LEFT]
+                elif xx == 0:
+                    assert tile.edges[LEFT]
+                    assert tile.borders[RIGHT] == matrix[yy][xx + 1].borders[LEFT]
+                elif xx == puzzle_size - 1:
+                    assert tile.edges[RIGHT]
+                    assert tile.borders[LEFT] == matrix[yy][xx - 1].borders[RIGHT]
+
 
         return matrix
 
