@@ -3,7 +3,7 @@ from __future__ import annotations
 from math import sqrt
 from itertools import chain, repeat
 
-from typing import Any, Dict, List, Set, Tuple, Union, no_type_check
+from typing import Any, Dict, Iterable, List, Set, Tuple, Union, no_type_check
 
 
 TILE_SIZE = 10
@@ -18,8 +18,9 @@ HORIZONTAL = 1
 
 BITS = str.maketrans('.#', '01')
 
-def pixels_int(pixels: str) -> int:
-    bits = pixels.translate(BITS)
+def pixels_int(pixels: List[str]) -> int:
+    px = "".join(pixels)
+    bits = px.translate(BITS)
     return int(bits, 2)
 
 def rotate(original: List[List[Any]]):
@@ -28,10 +29,13 @@ def rotate(original: List[List[Any]]):
         list(t) for t in rotated
     )
 
-def flip_v(original: List[List[Any]]):
+def flip_v(original: List[Any]):
     return list(
         row[::-1] for row in original
     )
+
+def flip_h(original: List[Iterable[Any]]):
+    return original[::-1]
 
 
 def flipped(value: int, bitsize: int = TILE_SIZE) -> int:
@@ -45,7 +49,7 @@ class Tile:
     def __init__(self, lines: List[str]) -> None:
         assert len(lines) == TILE_SIZE + 1
         self.id = int(lines[0].split(' ')[1][:-1])
-        self.pixels = lines[1:]
+        self.pixels = list(list(line) for line in lines[1:])
         self.edges = [False, False, False, False]
 
         # borders
@@ -56,17 +60,9 @@ class Tile:
         #v-2->
         self.borders: List[int] = []
         self.borders.append(pixels_int(self.pixels[0]))
-        self.borders.append(pixels_int(
-            "".join([
-                self.pixels[y][9] for y in range(10)
-            ])
-        ))
+        self.borders.append(pixels_int(list(self.pixels[y][9] for y in range(10))))
         self.borders.append(pixels_int(self.pixels[9]))
-        self.borders.append(pixels_int(
-            "".join([
-                self.pixels[y][0] for y in range(10)
-            ])
-        ))
+        self.borders.append(pixels_int(list(self.pixels[y][0] for y in range(10))))
         self._update_flipped()
 
 
@@ -86,7 +82,11 @@ class Tile:
 
 
     def __str__(self) -> str:
-        return f"Tile {self.id}"
+        lines = [f"Tile {self.id}"]
+        lines.extend(
+            "".join(row) for row in self.pixels
+        )
+        return "\n".join(lines)
 
     def _update_flipped(self):
         self.flipped_borders = list([
@@ -108,6 +108,7 @@ class Tile:
             self.edges[LEFT],
         ]
         self._update_flipped()
+        self.pixels = flip_h(self.pixels)
 
 
     def flip_v(self):
@@ -125,6 +126,7 @@ class Tile:
             self.edges[RIGHT],
         ]
         self._update_flipped()
+
 
     def flip_d(self):
         """ Flip along the diagonal axis """
