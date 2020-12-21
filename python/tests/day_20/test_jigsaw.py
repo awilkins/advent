@@ -209,6 +209,10 @@ class TestPuzzle(TestCase):
         actual = image.find_monsters()
         self.assertEqual(expected, actual)
 
+        expected_monsters = get_resource(f'day_{DAY}/detected_monsters.txt').read_text().splitlines()
+        actual_monsters = str(image).splitlines()
+        self.assertListEqual(expected_monsters, actual_monsters)
+
 
     def test_roughness(self):
         lines = get_resource(f'day_{DAY}/example_1.txt').read_text().splitlines()
