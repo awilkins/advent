@@ -16,7 +16,7 @@ BOTTOM = 2
 VERTICAL = 0
 HORIZONTAL = 1
 
-BITS = str.maketrans('.#', '01')
+BITS = str.maketrans('.# ', '010')
 
 def pixels_int(pixels: List[str]) -> int:
     px = "".join(pixels)
@@ -396,11 +396,16 @@ class Puzzle:
     def get_size(self):
         return int(sqrt(len(self.tiles)))
 
+MONSTER = """\
+                  #.
+#    ##    ##    ###
+ #  #  #  #  #  #...
+""".splitlines()
 
 class Image:
 
     def __init__(self, puzzle: Puzzle):
-        self.pixels = []
+        self.pixels: List[List[str]] = []
         CELL_SIZE = TILE_SIZE - 2
         for row in puzzle.matrix:
             for yy in range(CELL_SIZE):
@@ -411,6 +416,33 @@ class Image:
 
     def __str__(self):
         return "\n".join("".join(row) for row in self.pixels)
+
+
+    def find_monsters(self) -> int:
+        MONSTER_MASK = list(pixels_int(list(row)) for row in MONSTER)
+        count = 0
+
+        for yy in range(len(self.pixels) - len(MONSTER)):
+            for xx in range(len(self.pixels[0]) - len(MONSTER[0])):
+                window: List[List[str]] = [
+                    self.pixels[yy+0][xx:xx+len(MONSTER[0])],
+                    self.pixels[yy+1][xx:xx+len(MONSTER[0])],
+                    self.pixels[yy+2][xx:xx+len(MONSTER[0])],
+                ]
+
+                found = True
+                for index, row in enumerate(window):
+                    rowbits = pixels_int(row)
+                    mask = MONSTER_MASK[index]
+                    masked = rowbits & mask
+                    if masked != mask:
+                        found = False
+                        break
+                if found:
+                    count += 1
+
+        return count
+
 
 
 
