@@ -4,6 +4,5 @@
   ],
   "python.testing.pytestEnabled": false,
   "python.testing.unittestEnabled": false,
-  "python.testing.nosetestsEnabled": true,
-  "python.pythonPath": "/home/awilkins/.cache/pypoetry/virtualenvs/advent-wSs1rY2v-py3.9/bin/python"
+  "python.testing.nosetestsEnabled": true
 }
