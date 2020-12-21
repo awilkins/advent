@@ -210,6 +210,18 @@ class TestPuzzle(TestCase):
         self.assertEqual(expected, actual)
 
 
+    def test_roughness(self):
+        lines = get_resource(f'day_{DAY}/example_1.txt').read_text().splitlines()
+        puzzle = Puzzle(lines)
+        image = Image(puzzle)
+
+        self.assertListEqual(image.pixels[0], list(".####...#####..#...###.."))
+
+        expected = 273
+        actual = image.roughness()
+        self.assertEqual(expected, actual)
+
+
     def test_puzzle(self):
         lines = get_resource(f'day_{DAY}/example_1.txt').read_text().splitlines()
         puzzle = Puzzle(lines)
