@@ -3,7 +3,7 @@ from __future__ import annotations
 from math import sqrt
 from itertools import chain, repeat
 
-from typing import Any, Dict, Iterable, List, Set, Tuple, Union, no_type_check
+from typing import Any, Dict, Iterable, List, Set, Tuple, Union, cast, no_type_check
 
 
 TILE_SIZE = 10
@@ -29,15 +29,15 @@ def rotate(original: List[List[Any]]):
         list(t) for t in rotated
     )
 
-def flip_v(original: List[List[str]]):
+def flip_v(original: List[List[Any]]):
     return list(
         row[::-1] for row in original
     )
 
-def flip_h(original: List[List[str]]):
+def flip_h(original: List[List[Any]]):
     return original[::-1]
 
-def flip_d(original: List[List[str]]):
+def flip_d(original: List[List[Any]]):
     target: List[List[str]] = list(
         list(repeat(' ', len(l))) for l in original
     )
@@ -140,6 +140,7 @@ class Tile:
             self.edges[RIGHT],
         ]
         self._update_flipped()
+        self.pixels = flip_v(self.pixels)
 
 
     def flip_d(self):
@@ -178,6 +179,7 @@ class Tile:
             ii += 1
 
         self._update_flipped()
+        self.pixels = rotate(self.pixels)
 
     def align(self, alignments: List[Tuple[int, int]]):
         # will always be 1 or 2 values, second one is always TOP
@@ -248,7 +250,7 @@ class Puzzle:
 
             ii += 1
         corners = self.find_corners()
-        self.matrix = self.solve_matrix(corners[0])
+        self.matrix: List[List[Tile]] = self.solve_matrix(corners[0])
 
 
     def find_edges(self, edginess = 1) -> List[Tile]:
@@ -363,4 +365,52 @@ class Puzzle:
                 assert tile.borders[RIGHT] == matrix[yy][xx + 1].borders[LEFT]
 
         return matrix
+
+
+    def rotate(self, count = 1):
+        ii = 0
+        while ii < count:
+            self.matrix = cast(List[List[Tile]], rotate(self.matrix))
+            for tile in chain(*[row for row in self.matrix]):
+                tile.rotate()
+            ii += 1
+
+
+    def flip_h(self):
+        self.matrix = cast(List[List[Tile]], flip_h(self.matrix))
+        for tile in chain(*[row for row in self.matrix]):
+            tile.flip_h()
+
+
+    def flip_v(self):
+        self.matrix = cast(List[List[Tile]], flip_v(self.matrix))
+        for tile in chain(*[row for row in self.matrix]):
+            tile.flip_v()
+
+
+    def flip_d(self):
+        self.matrix = cast(List[List[Tile]], flip_d(self.matrix))
+        for tile in chain(*[row for row in self.matrix]):
+            tile.flip_d()
+
+    def get_size(self):
+        return int(sqrt(len(self.tiles)))
+
+
+class Image:
+
+    def __init__(self, puzzle: Puzzle):
+        self.pixels = []
+        CELL_SIZE = TILE_SIZE - 2
+        for row in puzzle.matrix:
+            for yy in range(CELL_SIZE):
+                this_row = []
+                for tile in row:
+                    this_row.extend(tile.borderless()[yy])
+                self.pixels.append(this_row)
+
+    def __str__(self):
+        return "\n".join("".join(row) for row in self.pixels)
+
+
 
