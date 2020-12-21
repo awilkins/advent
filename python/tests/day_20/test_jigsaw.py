@@ -32,9 +32,29 @@ class TestPuzzle(TestCase):
 
     def test_pixels_int(self):
         expected = 1
-        actual = pixels_int('.........#')
+        actual = pixels_int(list('.........#'))
 
         self.assertEqual(expected, actual)
+
+
+    def test_flip_d(self):
+
+        original = [
+            list(s) for s in [
+                "ABC",
+                "DEF",
+                "GHI",
+            ]
+        ]
+        expected = [
+            list(s) for s in [
+                "IFC",
+                "HEB",
+                "GDA",
+            ]
+        ]
+        actual = flip_d(original)
+        self.assertListEqual(expected, actual)
 
 
     def test_tile(self):

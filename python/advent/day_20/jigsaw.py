@@ -38,7 +38,20 @@ def flip_h(original: List[List[str]]):
     return original[::-1]
 
 def flip_d(original: List[List[str]]):
-    return original
+    target: List[List[str]] = list(
+        list(repeat(' ', len(l))) for l in original
+    )
+    assert target[0] is not target[1]
+    for yy in range(len(original[0])):
+        for xx in range(len(original[0])):
+            ix = -(xx + 1)
+            iy = -(yy + 1)
+            target[ix][iy] = original[yy][xx]
+            target[yy][xx] = original[ix][iy]
+
+    return target
+
+
 
 
 def flipped(value: int, bitsize: int = TILE_SIZE) -> int:
@@ -146,6 +159,7 @@ class Tile:
             self.edges[2],
         ]
         self._update_flipped()
+        self.pixels = flip_d(self.pixels)
 
 
     def rotate(self, count = 1):
