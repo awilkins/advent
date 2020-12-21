@@ -3,7 +3,7 @@ from __future__ import annotations
 from math import sqrt
 from itertools import chain, repeat
 
-from typing import Any, Dict, List, Set, Tuple, no_type_check
+from typing import Any, Dict, List, Set, Tuple, Union, no_type_check
 
 
 TILE_SIZE = 10
@@ -126,6 +126,22 @@ class Tile:
         ]
         self._update_flipped()
 
+    def flip_d(self):
+        """ Flip along the diagonal axis """
+        self.borders = [
+            flipped(self.borders[1]),
+            flipped(self.borders[0]),
+            flipped(self.borders[3]),
+            flipped(self.borders[2]),
+        ]
+        self.edges = [
+            self.edges[1],
+            self.edges[0],
+            self.edges[3],
+            self.edges[2],
+        ]
+        self._update_flipped()
+
 
     def rotate(self, count = 1):
         ii = 0
@@ -146,16 +162,34 @@ class Tile:
 
         self._update_flipped()
 
-    def align(self, value, border=LEFT):
-        if value not in self.borders:
-            axis = self.flipped_borders.index(value) % 2
-            if axis == VERTICAL:
-                self.flip_v()
-            else:
-                self.flip_h()
+    def align(self, alignments: List[Tuple[int, int]]):
+        # will always be 1 or 2 values, second one is always TOP
 
-        while self.borders[border] != value:
+        for position, value in alignments:
+            if value not in self.borders:
+                axis = self.flipped_borders.index(value) % 2
+                if axis == HORIZONTAL:
+                    self.flip_h()
+                else:
+                    self.flip_v()
+
+        rotate_count = 0
+        position, value = alignments[0]
+        while self.borders[position] != value:
             self.rotate()
+            rotate_count += 1
+            assert rotate_count < 4
+
+        position, value = alignments[-1]
+        if self.borders[position] != value:
+            self.flip_h()
+            self.flip_v()
+            self.flip_d()
+
+        while self.borders[position] != value:
+            self.rotate()
+
+
 
 class NullTile(Tile):
 
@@ -228,72 +262,6 @@ class Puzzle:
         return self.find_edges(edginess = 2)
 
 
-    def solve_edge(self, start: Tile) -> List[Tile]:
-        # Check it's really a corner
-        assert sum(start.edges) == 2
-        puzzle_size = sqrt(len(self.tiles))
-        row: List[Tile] = []
-        row.append(start)
-        # rotate corner so that it's top left
-        while not (start.edges[TOP] and start.edges[LEFT]):
-            start.rotate()
-
-        last_tile = start
-        xx = 1
-        while xx < puzzle_size:
-            next_tiles = [tile for tile in self.borders[last_tile.borders[RIGHT]] if tile is not last_tile]
-            assert len(next_tiles) == 1
-            next_tile = next_tiles[0]
-            row.append(next_tile)
-            next_tile.align(last_tile.borders[RIGHT])
-            last_tile = next_tile
-            xx += 1
-
-        # Check end is a corner
-        assert sum(row[-1].edges) == 2
-
-        return row
-
-    def solve_edges(self):
-
-        # First, find the corners and edges
-        corners = self.find_corners()
-        assert len(corners) == 4
-        edges = self.find_edges()
-        puzzle_size = sqrt(len(self.tiles))
-        edge_size = puzzle_size - 2
-        assert len(edges) == edge_size * 4
-
-        first_corner = corners[0]
-        solved_edges: List[List[Tile]] = []
-
-        next_corner = first_corner
-        while len(solved_edges) < 4:
-            solved_edges.append(
-                self.solve_edge(next_corner)
-            )
-            next_corner = solved_edges[-1][-1]
-            next_corner.rotate(LEFT)
-
-        return solved_edges
-
-    def get_matrix(self, edges):
-        puzzle_size = int(sqrt(len(self.tiles)))
-
-        top, right, bottom, left = edges
-
-        rows = []
-        rows.append(top)
-        yy = 1
-        while yy < puzzle_size - 1:
-            new_row = [ left[-(yy+1)] ]
-            new_row.extend(repeat(EMPTY, puzzle_size - 2))
-            new_row.append(right[yy])
-            rows.append(new_row)
-            yy += 1
-        rows.append(bottom[::-1])
-        return rows
-
 
     def count_empty_squares(self, matrix: List[List[Tile]]) -> int:
         count = 0
@@ -318,6 +286,7 @@ class Puzzle:
             start.rotate()
 
         matrix[0][0] = start
+        used_tiles = [start]
 
         for yy in range(puzzle_size):
             for xx in range(puzzle_size):
@@ -325,19 +294,33 @@ class Puzzle:
                 if tile is not EMPTY:
                     continue
 
+                alignments: List[Tuple[int, int]] =[]
+
                 if xx == 0:
                     last_tile = matrix[yy - 1][xx]
                     last_border = last_tile.borders[BOTTOM]
-                    alignment_border = TOP
+                    alignments.append((TOP, last_border))
                 else:
                     last_tile = matrix[yy][xx - 1]
                     last_border = last_tile.borders[RIGHT]
-                    alignment_border = LEFT
+                    alignments.append((LEFT, last_border))
+                    if yy > 0:
+                        upper_tile = matrix[yy - 1][xx]
+                        alignments.append((TOP, upper_tile.borders[BOTTOM]))
 
                 matches = list(t for t in self.borders[last_border] if t is not last_tile)
+
                 assert len(matches) == 1
                 next_tile = matches[0]
-                next_tile.align(last_border, alignment_border)
+                assert next_tile not in used_tiles
+                used_tiles.append(next_tile)
+                print(f'Used tile : {next_tile.id}')
+
+                # if yy == 0:
+                #     alignment_values.append(True)
+                #     alignment_borders.append(TOP)
+
+                next_tile.align(alignments)
 
                 # check edges
                 if yy == 0:
@@ -345,25 +328,26 @@ class Puzzle:
                         next_tile.rotate(2)
                         next_tile.flip_v()
                     assert next_tile.edges[TOP]
-                elif yy == puzzle_size - 1:
+
+                if yy == puzzle_size - 1:
                     if not next_tile.edges[BOTTOM]:
                         next_tile.rotate(2)
                         next_tile.flip_v()
                     assert next_tile.edges[BOTTOM]
-                else:
+
+                if 0 < yy and yy < puzzle_size:
                     upper_tile = matrix[yy - 1][xx]
                     if upper_tile.borders[BOTTOM] != next_tile.borders[TOP]:
                         next_tile.rotate(2)
                         next_tile.flip_v()
                     assert upper_tile.borders[BOTTOM] == next_tile.borders[TOP]
 
-
                 if xx == 0:
                     if not next_tile.edges[LEFT]:
                         next_tile.rotate(2)
                         next_tile.flip_h()
                     assert next_tile.edges[LEFT]
-                if xx == puzzle_size -1:
+                elif xx == puzzle_size - 1:
                     if not next_tile.edges[RIGHT]:
                         next_tile.rotate(2)
                         next_tile.flip_h()
