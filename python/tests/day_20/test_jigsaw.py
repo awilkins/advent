@@ -138,7 +138,6 @@ class TestPuzzle(TestCase):
         self.assertEqual(expected, tile.borders)
 
 
-
     def test_tile_rotate(self):
         tile = Tile(TILE_2311.splitlines())
         borders = tile.borders.copy()
@@ -148,6 +147,23 @@ class TestPuzzle(TestCase):
         assert tile.borders[BOTTOM] == borders[RIGHT]
         assert tile.borders[LEFT] == borders[BOTTOM]
         assert tile.borders[TOP] == borders[LEFT]
+
+
+    def test_tile_borderless(self):
+        tile = Tile(TILE_2311.splitlines())
+        expected = """\
+#..#....
+...##..#
+###.#...
+#.##.###
+#...#.##
+#.#.#..#
+.#....#.
+##...#.#
+""".splitlines()
+
+        actual = list("".join(row) for row in tile.borderless())
+        self.assertListEqual(expected, actual)
 
 
     def test_puzzle(self):
