@@ -285,24 +285,6 @@ class TestPuzzle(TestCase):
         self.assertListEqual(expected, tile_ids)
 
 
-    # def test_solve_edges(self):
-    #     lines = get_resource(f'day_{DAY}/example_1.txt').read_text().splitlines()
-    #     puzzle = Puzzle(lines)
-
-    #     edges = puzzle.solve_edges()
-    #     expected = [
-    #         [1951, 2729, 2971],
-    #         [2971, 1489, 1171],
-    #         [1171, 2473, 3079],
-    #         [3079, 2311, 1951],
-    #     ]
-    #     edge_ids = list([
-    #        t.id for t in edge
-    #     ] for edge in edges)
-    #     for l in edge_ids: print(l)
-    #     self.assertListEqual(expected, edge_ids)
-
-
     def test_answer_2(self):
         lines = get_resource(f'day_{DAY}/input.txt').read_text().splitlines()
         puzzle = Puzzle(lines)
