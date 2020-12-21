@@ -182,6 +182,7 @@ class Tile:
 
         position, value = alignments[-1]
         if self.borders[position] != value:
+            # Reverse the tile order
             self.flip_h()
             self.flip_v()
             self.flip_d()
@@ -316,42 +317,20 @@ class Puzzle:
                 used_tiles.append(next_tile)
                 print(f'Used tile : {next_tile.id}')
 
-                # if yy == 0:
-                #     alignment_values.append(True)
-                #     alignment_borders.append(TOP)
-
                 next_tile.align(alignments)
 
-                # check edges
+                # fixup edges
                 if yy == 0:
                     if not next_tile.edges[TOP]:
                         next_tile.rotate(2)
                         next_tile.flip_v()
                     assert next_tile.edges[TOP]
 
-                if yy == puzzle_size - 1:
-                    if not next_tile.edges[BOTTOM]:
-                        next_tile.rotate(2)
-                        next_tile.flip_v()
-                    assert next_tile.edges[BOTTOM]
-
-                if 0 < yy and yy < puzzle_size:
-                    upper_tile = matrix[yy - 1][xx]
-                    if upper_tile.borders[BOTTOM] != next_tile.borders[TOP]:
-                        next_tile.rotate(2)
-                        next_tile.flip_v()
-                    assert upper_tile.borders[BOTTOM] == next_tile.borders[TOP]
-
                 if xx == 0:
                     if not next_tile.edges[LEFT]:
                         next_tile.rotate(2)
                         next_tile.flip_h()
                     assert next_tile.edges[LEFT]
-                elif xx == puzzle_size - 1:
-                    if not next_tile.edges[RIGHT]:
-                        next_tile.rotate(2)
-                        next_tile.flip_h()
-                    assert next_tile.edges[RIGHT]
 
                 matrix[yy][xx] = next_tile
 
