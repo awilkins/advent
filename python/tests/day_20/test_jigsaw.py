@@ -166,6 +166,37 @@ class TestPuzzle(TestCase):
         self.assertListEqual(expected, actual)
 
 
+    def test_print_image(self):
+        lines = get_resource(f'day_{DAY}/example_1.txt').read_text().splitlines()
+        puzzle = Puzzle(lines)
+
+        solution = [
+            [ 1951, 2311, 3079 ],
+            [ 2729, 1427, 2473 ],
+            [ 2971, 1489, 1171 ],
+        ]
+        puzzle.rotate()
+        puzzle.flip_d()
+        puzzle.rotate(3)
+
+        actual = list(
+            list(tile.id for tile in row) for row in puzzle.matrix
+        )
+        self.assertListEqual(solution, actual)
+
+        tile = Tile(TILE_2311.splitlines())
+        tile.flip_h()
+        self.assertEqual(tile.id, puzzle.matrix[0][1].id)
+        self.assertListEqual(tile.pixels, puzzle.matrix[0][1].pixels)
+
+        image = Image(puzzle)
+        img = str(image).splitlines()
+        assert len(img) == 8 * 3
+        assert len(img[0]) == 8 * 3
+        s_image = str(image)
+        e_image = get_resource(f'day_{DAY}/example_image.txt').read_text().strip()
+        self.assertEqual(e_image, s_image)
+
     def test_puzzle(self):
         lines = get_resource(f'day_{DAY}/example_1.txt').read_text().splitlines()
         puzzle = Puzzle(lines)
