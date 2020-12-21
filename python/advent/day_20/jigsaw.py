@@ -52,8 +52,6 @@ def flip_d(original: List[List[str]]):
     return target
 
 
-
-
 def flipped(value: int, bitsize: int = TILE_SIZE) -> int:
     bits = bin(value)
     flipped_bits = bits[2:].zfill(bitsize)[::-1]
@@ -209,7 +207,10 @@ class Tile:
         while self.borders[position] != value:
             self.rotate()
 
-
+    def borderless(self) -> List[List[str]]:
+        return [
+            row[1:-1] for row in self.pixels[1:-1]
+        ]
 
 class NullTile(Tile):
 
@@ -362,8 +363,4 @@ class Puzzle:
                 assert tile.borders[RIGHT] == matrix[yy][xx + 1].borders[LEFT]
 
         return matrix
-
-
-
-
 
