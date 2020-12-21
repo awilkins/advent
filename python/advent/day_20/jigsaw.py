@@ -29,13 +29,16 @@ def rotate(original: List[List[Any]]):
         list(t) for t in rotated
     )
 
-def flip_v(original: List[Any]):
+def flip_v(original: List[List[str]]):
     return list(
         row[::-1] for row in original
     )
 
-def flip_h(original: List[Iterable[Any]]):
+def flip_h(original: List[List[str]]):
     return original[::-1]
+
+def flip_d(original: List[List[str]]):
+    return original
 
 
 def flipped(value: int, bitsize: int = TILE_SIZE) -> int:
