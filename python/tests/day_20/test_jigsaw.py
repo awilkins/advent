@@ -73,6 +73,51 @@ class TestPuzzle(TestCase):
         assert tile.borders[RIGHT] == borders[LEFT]
         assert tile.borders[LEFT] == borders[RIGHT]
 
+    def test_tile_flip_d(self):
+        tile = Tile(TILE_2311.splitlines())
+
+        flipped_borders = tile.flipped_borders.copy()
+
+        tile.flip_d()
+
+        assert tile.borders[TOP] == flipped_borders[RIGHT]
+        assert tile.borders[RIGHT] == flipped_borders[TOP]
+        assert tile.borders[BOTTOM] == flipped_borders[LEFT]
+        assert tile.borders[LEFT] == flipped_borders[BOTTOM]
+
+    def test_invert_rotation(self):
+        tile = Tile(TILE_2311.splitlines())
+
+        tile.borders = [0, 1, 2, 3]
+        tile._update_flipped()
+
+        tile.flip_h()
+        tile.flip_v()
+        tile.flip_d()
+
+        expected = [3, 2, 1, 0]
+        self.assertEqual(expected, tile.borders)
+
+
+    def test_rotated_alignment(self):
+        tile = Tile(TILE_2311.splitlines())
+
+        tile.borders = [1, 2, 3, 4]
+        tile._update_flipped()
+
+        tile.rotate()
+        tile.flip_h()
+
+        alignments = []
+        alignments.append((LEFT, 1))
+        alignments.append((TOP, 4))
+
+        tile.align(alignments)
+
+        expected = [4, 3, 2, 1]
+        self.assertEqual(expected, tile.borders)
+
+
 
     def test_tile_rotate(self):
         tile = Tile(TILE_2311.splitlines())
