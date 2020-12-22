@@ -1,5 +1,7 @@
 from unittest import TestCase
 
+from pathlib import Path
+from unittest.case import skip
 from ..util import get_resource
 
 DAY="22"
@@ -57,8 +59,11 @@ class TestThing(TestCase):
         lines = INFINITE_GAME.splitlines()
 
         score = play_recursive_combat(lines)
+        for line in log:
+            print(line)
 
 
+    @skip("Takes too long")
     def test_example_2(self):
         lines = EXAMPLE_INPUT.splitlines()
         score, game = play_recursive_combat(lines)
@@ -69,6 +74,9 @@ class TestThing(TestCase):
             list(game.player2)
         )
 
+        sample_log = get_resource(f'day_{DAY}/example_game_log.txt').read_text().splitlines()
+        self.assertListEqual(sample_log, log)
+
 
     def test_answer_2(self):
         input_lines = get_resource(f'day_{DAY}/input.txt').read_text().splitlines()
@@ -78,7 +86,12 @@ class TestThing(TestCase):
         print(game.player1)
         print(game.player2)
 
-        assert 34746 != answer
+        with Path('/tmp/log.txt').open('w') as file:
+            for line in log:
+                file.write(line)
+                file.write("\n")
+
+        assert 34746 < answer
         # expected =
         # self.assertEqual(expected, answer)
 
