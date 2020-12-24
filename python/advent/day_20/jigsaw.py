@@ -65,13 +65,15 @@ class Tile:
         self.id = int(lines[0].split(' ')[1][:-1])
         self.pixels = list(list(line) for line in lines[1:])
         self.edges = [False, False, False, False]
-
+        self.update_borders()
         # borders
         #|-0->
         #|   |
         #3   1
         #|   v
         #v-2->
+    
+    def update_borders(self):
         self.borders: List[int] = []
         self.borders.append(pixels_int(self.pixels[0]))
         self.borders.append(pixels_int(list(self.pixels[y][9] for y in range(10))))
@@ -121,8 +123,8 @@ class Tile:
             self.edges[TOP],
             self.edges[LEFT],
         ]
-        self._update_flipped()
         self.pixels = flip_h(self.pixels)
+        self._update_flipped()
 
 
     def flip_v(self):
@@ -139,8 +141,8 @@ class Tile:
             self.edges[BOTTOM],
             self.edges[RIGHT],
         ]
-        self._update_flipped()
         self.pixels = flip_v(self.pixels)
+        self._update_flipped()
 
 
     def flip_d(self):
@@ -158,8 +160,8 @@ class Tile:
             self.edges[3],
             self.edges[2],
         ]
-        self._update_flipped()
         self.pixels = flip_d(self.pixels)
+        self._update_flipped()
 
 
     def rotate(self, count = 1):
@@ -179,12 +181,12 @@ class Tile:
             ]
             ii += 1
 
-        self._update_flipped()
         self.pixels = rotate(self.pixels)
+        self._update_flipped()
 
     def align(self, alignments: List[Tuple[int, int]]):
         # will always be 1 or 2 values, second one is always TOP
-
+        # TODO : write an alignment test, align with ediges as well
         for position, value in alignments:
             if value not in self.borders:
                 axis = self.flipped_borders.index(value) % 2
