@@ -144,9 +144,9 @@ class TestPuzzle(TestCase):
 
         tile.rotate()
         assert tile.borders[RIGHT] == borders[TOP]
-        assert tile.borders[BOTTOM] == borders[RIGHT]
+        assert tile.borders[BOTTOM] == flipped(borders[RIGHT])
         assert tile.borders[LEFT] == borders[BOTTOM]
-        assert tile.borders[TOP] == borders[LEFT]
+        assert tile.borders[TOP] == flipped(borders[LEFT])
 
 
     def test_tile_borderless(self):
