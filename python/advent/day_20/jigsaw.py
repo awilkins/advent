@@ -166,9 +166,9 @@ class Tile:
         ii = 0
         while ii < count:
             self.borders = [
-                self.borders[LEFT],
+                flipped(self.borders[LEFT]),
                 self.borders[TOP],
-                self.borders[RIGHT],
+                flipped(self.borders[RIGHT]),
                 self.borders[BOTTOM],
             ]
             self.edges = [
