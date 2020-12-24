@@ -26,7 +26,7 @@ class Circle:
             self.length += 1
 
         # splice the circle
-        real_first_cup = first_cup.next
+        real_first_cup: Cup = first_cup.next
         next_cup.next = real_first_cup
 
         self.current_cup = real_first_cup
@@ -112,8 +112,6 @@ def play(line: str, rounds: int= 100) -> str:
             move=im + 1,
             high=high
         )
-        if im % 100_000 == 0:
-            print(im)
 
     one_index = circle.index(1)
     circle.rotate(-one_index)

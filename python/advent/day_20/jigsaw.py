@@ -475,7 +475,7 @@ class Image:
                                 self.pixels[yy+wy][xx+wx] = 'O'
                     count += 1
 
-        assert bottom_x == len(self.pixels)
+        assert bottom_x == len(self.pixels[0])
         assert bottom_y == len(self.pixels) - 1
         return count
 

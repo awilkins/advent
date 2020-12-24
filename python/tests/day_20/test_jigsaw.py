@@ -214,6 +214,27 @@ class TestPuzzle(TestCase):
         self.assertListEqual(expected_monsters, actual_monsters)
 
 
+    def test_find_lone_monster(self):
+        lines = get_resource(f'day_{DAY}/example_1.txt').read_text().splitlines()
+        puzzle = Puzzle(lines)
+        image = Image(puzzle)
+
+        image.pixels = [
+            list(row) for row in MONSTER
+        ]
+
+        expected = 1
+        actual = image.find_monsters()
+        self.assertEqual(expected, actual)
+
+        image.pixels = [
+            list(repeat('#', 20)) for _ in MONSTER
+        ]
+        actual = image.find_monsters()
+        self.assertEqual(expected, actual)
+
+
+
     def test_roughness(self):
         lines = get_resource(f'day_{DAY}/example_1.txt').read_text().splitlines()
         puzzle = Puzzle(lines)
