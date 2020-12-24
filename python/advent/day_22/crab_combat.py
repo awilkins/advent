@@ -5,7 +5,7 @@ from itertools import chain, islice
 from pathlib import Path
 
 
-from typing import List, Set, Tuple
+from typing import Any, List, Set, Tuple
 
 from tests.util import get_resource
 
@@ -30,18 +30,19 @@ class RecursiveCombat:
     def __init__(self, player1: deque[int], player2: deque[int]):
         global game_count
         game_count += 1
-        log.append(f"=== Game {game_count} ===")
+        # log.append(f"=== Game {game_count} ===")
 
         self.game = game_count
         self.round_count = 0
 
         self.player1 = player1
         self.player2 = player2
-        self.previous_positions: Set[bytes] = set([])
+        self.previous_positions: Set[Any] = set([])
 
 
-    def hash_position(self) -> bytes:
+    def hash_position(self):
         position = bytes(chain(self.player1, [0], self.player2))
+        # position = score(self.player1), score(self.player2)
         return position
 
 
@@ -49,10 +50,10 @@ class RecursiveCombat:
         """ returns 0 for continue, 1 for player1 wins, etc """
 
         self.round_count += 1
-        log.append("")
-        log.append(f"-- Round {self.round_count} (Game {self.game}) --")
-        log.append(f"Player 1's deck: {', '.join(str(i) for i in self.player1)}")
-        log.append(f"Player 2's deck: {', '.join(str(i) for i in self.player2)}")
+        # log.append("")
+        # log.append(f"-- Round {self.round_count} (Game {self.game}) --")
+        # log.append(f"Player 1's deck: {', '.join(str(i) for i in self.player1)}")
+        # log.append(f"Player 2's deck: {', '.join(str(i) for i in self.player2)}")
 
         position = self.hash_position()
         if position in self.previous_positions:
@@ -62,27 +63,27 @@ class RecursiveCombat:
         self.previous_positions.add(position)
 
         card1 = self.player1.popleft()
-        log.append(f"Player 1 plays: {card1}")
+        # log.append(f"Player 1 plays: {card1}")
         card2 = self.player2.popleft()
-        log.append(f"Player 2 plays: {card2}")
+        # log.append(f"Player 2 plays: {card2}")
 
         if card1 <= len(self.player1) and card2 <= len(self.player2):
             # Play a recursive game
             new_player_1 = deque(islice(self.player1, card1))
             new_player_2 = deque(islice(self.player2, card2))
-            log.append("Playing a sub-game to determine the winner...")
-            log.append("")
+            # log.append("Playing a sub-game to determine the winner...")
+            # log.append("")
             new_game = RecursiveCombat(new_player_1, new_player_2)
             recursive_winner = new_game.play()
-            log.append(f"...anyway, back to game {self.game}.")
+            # log.append(f"...anyway, back to game {self.game}.")
             if recursive_winner == 1:
                 self.player1.append(card1)
                 self.player1.append(card2)
-                log.append(f"Player 1 wins round {self.round_count} of game {self.game}!")
+                # log.append(f"Player 1 wins round {self.round_count} of game {self.game}!")
             elif recursive_winner == 2:
                 self.player2.append(card2)
                 self.player2.append(card1)
-                log.append(f"Player 2 wins round {self.round_count} of game {self.game}!")
+                # log.append(f"Player 2 wins round {self.round_count} of game {self.game}!")
             else:
                 raise RuntimeError("THERE CAN BE ONLY ONE")
         else:
@@ -90,11 +91,11 @@ class RecursiveCombat:
             if card1 > card2:
                 self.player1.append(card1)
                 self.player1.append(card2)
-                log.append(f"Player 1 wins round {self.round_count} of game {self.game}!")
+                # log.append(f"Player 1 wins round {self.round_count} of game {self.game}!")
             elif card2 > card1:
                 self.player2.append(card2)
                 self.player2.append(card1)
-                log.append(f"Player 2 wins round {self.round_count} of game {self.game}!")
+                # log.append(f"Player 2 wins round {self.round_count} of game {self.game}!")
             else:
                 raise RuntimeError("EQUAL CARDS")
 
@@ -112,8 +113,8 @@ class RecursiveCombat:
         while winner == 0:
             winner = self.play_round()
 
-        log.append(f"The winner of game {self.game} is player {winner}!")
-        log.append("")
+        # log.append(f"The winner of game {self.game} is player {winner}!")
+        # log.append("")
         return winner
 
 
@@ -168,10 +169,10 @@ def play_recursive_combat(lines: List[str]) -> Tuple[int, RecursiveCombat]:
     game = RecursiveCombat(player1, player2)
     winner = game.play()
 
-    log.append("")
-    log.append("== Post-game results ==")
-    log.append(f"Player 1's deck: {', '.join(str(i) for i in game.player1)}".rstrip())
-    log.append(f"Player 2's deck: {', '.join(str(i) for i in game.player2)}".rstrip())
+    # log.append("")
+    # log.append("== Post-game results ==")
+    # log.append(f"Player 1's deck: {', '.join(str(i) for i in game.player1)}".rstrip())
+    # log.append(f"Player 2's deck: {', '.join(str(i) for i in game.player2)}".rstrip())
     if winner == 1:
         return score(game.player1), game
     if winner == 2:
