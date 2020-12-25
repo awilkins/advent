@@ -1,4 +1,7 @@
+from os import pathconf
 from unittest import TestCase
+
+import re
 
 from tests.util import get_resource
 
@@ -8,52 +11,71 @@ from advent.day_19.monster import *
 
 
 class TestPart2(TestCase):
-
-    def test_example_2(self):
-        rules, messages = parse_input(EXAMPLE_INPUT.splitlines())
-
-        possibles = set(possible_messages(rules, rules[0]))
-        expected = 3
-        actual = sum([1 for message in messages if message in possibles])
-        self.assertEqual(expected, actual)
-
+    
+    def test_valid_regex(self):
+        rules, _ = parse_input(EXAMPLE_INPUT.splitlines())
+        
+        reggie = convert_rules_to_regex(rules)
+        re.compile(reggie)
+        
         patch(rules)
-        for m in possible_messages(rules, rules[11]):
-            print(m)
+        reg2 = convert_rules_to_regex(rules)
+        re.compile(reg2)
 
-    def test_answer_2(self):
-        input_lines =get_resource(f'day_{DAY}/input.txt').read_text().splitlines()
-
+        # Didn't crash? Great!
+    
+    
+    def test_part_1(self):
+        input_lines = get_resource(f'day_{DAY}/input.txt').read_text().splitlines()
         rules, messages = parse_input(input_lines)
-        patch(rules)
-
-        messages = list([(len(m), m) for m in messages])
-        messages.sort()
-
+        
+        reg = convert_rules_to_regex(rules)
+        rec = re.compile(reg)
 
         count = 0
-        bad = set([])
-        for _, m in messages:
-            for b in bad:
-                thisbad = False
-                if m[:len(b)] == b:
-                    print("skipbad!")
-                    thisbad = True
-                    break
-                if thisbad == True: continue
+        for m in messages:
+            if rec.match(m):
+                count += 1
+        
+        self.assertEqual(195, count)
+        
 
-            for p in possible_messages(rules, rules[0]):
-                if len(p) > len(m):
-                    print(f"bad : {m}")
-                    bad.add(m)
-                    break
-                if p == m:
-                    count += 1
-                    print(f"gud : {m}")
-                    break
+    def test_part_2(self):
+        input_lines = get_resource(f'day_{DAY}/input.txt').read_text().splitlines()
+        rules, messages = parse_input(input_lines)
 
+        patch(rules)
+
+        reg = convert_rules_to_regex(rules)
+        print(reg)
+        rec = re.compile(reg)
+
+        count = 0
+        for m in messages:
+            if rec.match(m):
+                count += 1
+        
         print(f"\nAnswer 2: {count}")
+        assert count < 319
+        assert count > 259
+        assert count != 6
+        assert count == 309
+        # self.assertEqual(195, count)
+        
 
+EXAMPLE_INPUT_1 = """\
+0: 1 2
+1: "a"
+2: 1 3 | 3 1
+3: "b"
+
+a
+b
+ab
+ba
+aab
+aba
+"""
 
 EXAMPLE_INPUT = """\
 42: 9 14 | 10 1
