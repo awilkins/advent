@@ -65,13 +65,15 @@ class Tile:
         self.id = int(lines[0].split(' ')[1][:-1])
         self.pixels = list(list(line) for line in lines[1:])
         self.edges = [False, False, False, False]
-
+        self.update_borders()
         # borders
         #|-0->
         #|   |
         #3   1
         #|   v
         #v-2->
+    
+    def update_borders(self):
         self.borders: List[int] = []
         self.borders.append(pixels_int(self.pixels[0]))
         self.borders.append(pixels_int(list(self.pixels[y][9] for y in range(10))))
@@ -121,8 +123,8 @@ class Tile:
             self.edges[TOP],
             self.edges[LEFT],
         ]
-        self._update_flipped()
         self.pixels = flip_h(self.pixels)
+        self._update_flipped()
 
 
     def flip_v(self):
@@ -139,8 +141,8 @@ class Tile:
             self.edges[BOTTOM],
             self.edges[RIGHT],
         ]
-        self._update_flipped()
         self.pixels = flip_v(self.pixels)
+        self._update_flipped()
 
 
     def flip_d(self):
@@ -158,17 +160,17 @@ class Tile:
             self.edges[3],
             self.edges[2],
         ]
-        self._update_flipped()
         self.pixels = flip_d(self.pixels)
+        self._update_flipped()
 
 
     def rotate(self, count = 1):
         ii = 0
         while ii < count:
             self.borders = [
-                self.borders[LEFT],
+                flipped(self.borders[LEFT]),
                 self.borders[TOP],
-                self.borders[RIGHT],
+                flipped(self.borders[RIGHT]),
                 self.borders[BOTTOM],
             ]
             self.edges = [
@@ -179,36 +181,34 @@ class Tile:
             ]
             ii += 1
 
-        self._update_flipped()
         self.pixels = rotate(self.pixels)
+        self._update_flipped()
 
-    def align(self, alignments: List[Tuple[int, int]]):
+    def align(self, top: int | bool, left: int | bool):
         # will always be 1 or 2 values, second one is always TOP
+        # TODO : write an alignment test, align with ediges as well
+        
+        # top edge
+        if isinstance(top, bool):
+            while self.borders[LEFT] not in [
+                left, flipped(left)
+            ]:
+                self.rotate()
+            if self.borders[LEFT] != left:
+                self.flip_h()
+        else:
+            while self.borders[TOP] not in [
+                top, flipped(top)
+            ]:
+                self.rotate()
+            if self.borders[TOP] == flipped(top):
+                self.flip_v()
+            
+        if left is True:
+            assert self.edges[LEFT] == left
+        else:
+            assert self.borders[LEFT] == left
 
-        for position, value in alignments:
-            if value not in self.borders:
-                axis = self.flipped_borders.index(value) % 2
-                if axis == HORIZONTAL:
-                    self.flip_h()
-                else:
-                    self.flip_v()
-
-        rotate_count = 0
-        position, value = alignments[0]
-        while self.borders[position] != value:
-            self.rotate()
-            rotate_count += 1
-            assert rotate_count < 4
-
-        position, value = alignments[-1]
-        if self.borders[position] != value:
-            # Reverse the tile order
-            self.flip_h()
-            self.flip_v()
-            self.flip_d()
-
-        while self.borders[position] != value:
-            self.rotate()
 
     def borderless(self) -> List[List[str]]:
         return [
@@ -318,19 +318,22 @@ class Puzzle:
                 if tile is not EMPTY:
                     continue
 
-                alignments: List[Tuple[int, int]] =[]
+                a_top, a_left = 0, 0
 
                 if xx == 0:
                     last_tile = matrix[yy - 1][xx]
                     last_border = last_tile.borders[BOTTOM]
-                    alignments.append((TOP, last_border))
+                    a_top = last_border
+                    a_left = True
                 else:
                     last_tile = matrix[yy][xx - 1]
                     last_border = last_tile.borders[RIGHT]
-                    alignments.append((LEFT, last_border))
+                    a_left = last_border
                     if yy > 0:
                         upper_tile = matrix[yy - 1][xx]
-                        alignments.append((TOP, upper_tile.borders[BOTTOM]))
+                        a_top = upper_tile.borders[BOTTOM]
+                    else:
+                        a_top = True
 
                 matches = list(t for t in self.borders[last_border] if t is not last_tile)
 
@@ -339,7 +342,7 @@ class Puzzle:
                 assert next_tile not in used_tiles
                 used_tiles.append(next_tile)
 
-                next_tile.align(alignments)
+                next_tile.align(a_top, a_left)
 
                 # fixup edges
                 if yy == 0:

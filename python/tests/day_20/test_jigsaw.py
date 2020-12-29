@@ -68,6 +68,19 @@ class TestPuzzle(TestCase):
             231,
             498,
         ], tile.borders)
+        
+    def test_align(self):
+        tile1 = Tile(TILE_2311.splitlines())
+        tile2 = Tile(TILE_2311.splitlines())
+        
+        tile1.flip_v()
+        tile1.flip_h()
+        tile1.rotate()
+        tile2.edges[RIGHT] = True
+
+         
+        tile2.align(True, 924)
+        print(tile2)
 
     def test_tile_flip_h(self):
         tile = Tile(TILE_2311.splitlines())
@@ -128,11 +141,11 @@ class TestPuzzle(TestCase):
         tile.rotate()
         tile.flip_h()
 
-        alignments = []
-        alignments.append((LEFT, 1))
-        alignments.append((TOP, 4))
+        # alignments = []
+        # alignments.append((LEFT, 1))
+        # alignments.append((TOP, 4))
 
-        tile.align(alignments)
+        tile.align(4, 1)
 
         expected = [4, 3, 2, 1]
         self.assertEqual(expected, tile.borders)
@@ -144,9 +157,9 @@ class TestPuzzle(TestCase):
 
         tile.rotate()
         assert tile.borders[RIGHT] == borders[TOP]
-        assert tile.borders[BOTTOM] == borders[RIGHT]
+        assert tile.borders[BOTTOM] == flipped(borders[RIGHT])
         assert tile.borders[LEFT] == borders[BOTTOM]
-        assert tile.borders[TOP] == borders[LEFT]
+        assert tile.borders[TOP] == flipped(borders[LEFT])
 
 
     def test_tile_borderless(self):
