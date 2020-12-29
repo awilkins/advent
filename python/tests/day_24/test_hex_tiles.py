@@ -119,6 +119,6 @@ class TestFloor(TestCase):
         answer = floor.count_black()
         print(f'\nAnswer 2 : {answer}\n')
 
-        # expected =
-        # self.assertEqual(expected, answer)
+        expected = 3831
+        self.assertEqual(expected, answer)
 

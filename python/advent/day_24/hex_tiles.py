@@ -122,16 +122,9 @@ class Floor:
         new_floor: Dict[Coord, bool] = {} #  self.tiles.copy()
         for coord, count in adjacency.items():
             if count == 2:
-                if self.tiles.get(coord, WHITE) == WHITE:
-                    new_floor[coord] = BLACK
-
-
-        for coord, tile in self.tiles.items():
-            if tile == BLACK:
-                count = adjacency.get(coord, 0)
-                if 0 == count or count > 2:
-                    new_floor[coord] = WHITE
-
+                new_floor[coord] = BLACK
+            if count == 1 and self.tiles.get(coord, WHITE):
+                new_floor[coord] = BLACK
 
 
         self.tiles = new_floor
