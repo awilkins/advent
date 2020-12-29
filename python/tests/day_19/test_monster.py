@@ -7,7 +7,7 @@ DAY="19"
 
 from advent.day_19.monster import *
 
-EXAMPLE_INPUT = """\
+EXAMPLE_INPUT_1 = """\
 0: 1 2
 1: "a"
 2: 1 3 | 3 1
@@ -40,7 +40,7 @@ class TestThing(TestCase):
 
 
     def test_example_1(self):
-        input_lines = EXAMPLE_INPUT.splitlines()
+        input_lines = EXAMPLE_INPUT_1.splitlines()
 
         rules, messages = parse_input(input_lines)
 
@@ -85,7 +85,7 @@ class TestThing(TestCase):
         self.assertListEqual(expected, actual)
 
 
-# @skip('too slow')
+@skip('too slow')
 def test_answer_1(self):
         input_lines = get_resource(f'day_{DAY}/input.txt').read_text().splitlines()
 

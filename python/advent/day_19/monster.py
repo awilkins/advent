@@ -85,3 +85,61 @@ def parse_input(lines: List[str]) -> Tuple[Dict[Rule], List[str]]:
         ii += 1
 
     return new_rules, messages
+
+def convert_rule(id: int, rules: Dict[int, Rule], converted: Dict[int, str]) -> str:
+
+    rule = rules[id]
+    
+    if isinstance(rule, str):
+        converted[id] = rule
+        return rule
+
+    if isinstance(rule, Tuple):
+        
+        rule0 = []
+        rules0: List[int] = rule[0]
+        for r_id in rules0:
+            r0 = converted.get(r_id, convert_rule(r_id, rules, converted))
+            rule0.append(r0)
+        
+        # HACK!!!!
+        r = ""
+        if id in rule[1]:
+            if id == 8:
+                r = f"{''.join(rule0)}+"
+            if id == 11:
+                r = f"{rule0[0]}{rule0[1]}"
+                r_repeats = []
+                for ii in range(1, 7):
+                    r_repeats.append(
+                        f"{rule0[0] * ii}{rule0[1] * ii}"
+                    )
+                r = f"({'|'.join(r_repeats)})"
+
+            converted[id] = r
+            return r
+
+        rule1 = []
+        rules1: List[int] = rule[1]
+        for r_id in rules1:
+            r1 = converted.get(r_id, convert_rule(r_id, rules, converted))
+            rule1.append(r1)
+        r = f"({''.join(rule0)}|{''.join(rule1)})"
+        converted[id] = r
+        return r
+
+    if isinstance(rule, List):
+        rule0 = []
+        for r_id in rule:
+            r0 = converted.get(r_id, convert_rule(r_id, rules, converted))
+            rule0.append(r0)
+        r = "".join(rule0)
+        converted[id] = r
+        return r
+
+
+
+def convert_rules_to_regex(rules: Dict[int, Rule]):
+    converted = {}
+    convert_rule(0, rules, converted)
+    return f"^{converted[0]}$"
