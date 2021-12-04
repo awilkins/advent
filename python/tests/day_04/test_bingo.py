@@ -44,8 +44,8 @@ class TestThing(TestCase):
         answer = answer_1(lines)
         print(f'\nAnswer 1 : {answer}\n')
 
-        # expected =
-        # self.assertEqual(expected, answer)
+        expected = 8136
+        self.assertEqual(expected, answer)
 
     def test_answer_2(self):
         lines = get_resource(f'day_{DAY}/input.txt').read_text().splitlines()
@@ -53,6 +53,6 @@ class TestThing(TestCase):
         answer = answer_2(lines)
         print(f'\nAnswer 2 : {answer}\n')
 
-        # expected =
-        # self.assertEqual(expected, answer)
+        expected = 12738
+        self.assertEqual(expected, answer)
 
