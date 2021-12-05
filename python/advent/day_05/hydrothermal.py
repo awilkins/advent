@@ -42,7 +42,7 @@ class SeaBed:
         self._vectors = [ Vector(line) for line in lines ]
 
 
-    def count_overlaps(self, threshold=1, diagonals=False):
+    def count_overlaps(self, diagonals=False):
 
         bed_map = [
             [0] * self._size for _ in range(self._size)
@@ -76,5 +76,5 @@ def answer_1(lines: List[str], size=10):
 
 def answer_2(lines: List[str], size=10):
     seabed = SeaBed(lines, size)
-    return seabed.count_overlaps(threshold=2, diagonals=True)
+    return seabed.count_overlaps(diagonals=True)
 
