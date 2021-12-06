@@ -1,10 +1,10 @@
+from advent.day_06.lanternfish import *
 from unittest import TestCase
 
 from ..util import get_resource
 
-DAY="06"
+DAY = "06"
 
-from advent.day_06.lanternfish import *
 
 EXAMPLE_INPUT = """\
 3,4,3,1,2
@@ -32,11 +32,12 @@ After 17 days: 0,1,0,5,6,0,1,2,2,3,0,1,2,2,2,3,3,4,4,5,7,8
 After 18 days: 6,0,6,4,5,6,0,1,1,2,6,0,1,1,1,2,2,3,3,4,6,7,8,8,8,8
 """
 
+
 class TestThing(TestCase):
 
     def test_next_day(self):
 
-        fish = [ int(f) for f in EXAMPLE_INPUT.split(',') ]
+        fish = [int(f) for f in EXAMPLE_INPUT.split(',')]
 
         actual = format_fish(fish, 0)
         expected = EXAMPLE_OUTPUT.splitlines()[0]
@@ -47,6 +48,7 @@ class TestThing(TestCase):
             actual = format_fish(fish, day)
             expected = EXAMPLE_OUTPUT.splitlines()[day]
             self.assertEqual(actual, expected)
+            print(actual, len(fish))
 
     def test_example_1(self):
         lines = EXAMPLE_INPUT.splitlines()
@@ -67,15 +69,35 @@ class TestThing(TestCase):
         answer = answer_1(lines, 80)
         print(f'\nAnswer 1 : {answer}\n')
 
-        # expected =
-        # self.assertEqual(expected, answer)
+        expected = 359999
+        self.assertEqual(expected, answer)
+
+    def test_example_2(self):
+        lines = EXAMPLE_INPUT.splitlines()
+
+        expected = 26
+        actual = answer_2(lines, 18)
+
+        self.assertEqual(actual, expected)
+
+        expected = 5934
+        actual = answer_2(lines, 80)
+
+        self.assertEqual(actual, expected)
+
+    def test_answer_1_with_solution_2(self):
+        lines = get_resource(f'day_{DAY}/input.txt').read_text().splitlines()
+
+        answer = answer_2(lines, 80)
+
+        expected = 359999
+        self.assertEqual(expected, answer)
 
     def test_answer_2(self):
         lines = get_resource(f'day_{DAY}/input.txt').read_text().splitlines()
 
-        answer = answer_1(lines, 256)
+        answer = answer_2(lines, 256)
         print(f'\nAnswer 2 : {answer}\n')
 
-        # expected =
-        # self.assertEqual(expected, answer)
-
+        expected = 1631647919273
+        self.assertEqual(expected, answer)
