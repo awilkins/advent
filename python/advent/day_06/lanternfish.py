@@ -36,10 +36,27 @@ def format_fish(fish: List[int], day: int) -> str:
     return f"{prefix} {','.join([ str(f) for f in fish] )}"
 
 
+def fish_redux(fish: List[int]) -> List[int]:
+    redux = [0] * 9
+    for f in fish:
+        redux[f] += 1
+    return redux
+
+
+def next_day_redux(redux: List[int]) -> List[int]:
+
+    next_redux = [0] * 9
+    for index in range(8, -1, -1):
+        next_redux[index - 1] = redux[index]
+
+    next_redux[6] += next_redux[8]
+
+    return next_redux
+
 
 def answer_1(lines: List[str], days: int):
 
-    fish = [ int(f) for f in lines[0].split(',') ]
+    fish = [int(f) for f in lines[0].split(',')]
 
     for day in range(days):
         fish = next_day(fish)
@@ -47,3 +64,12 @@ def answer_1(lines: List[str], days: int):
 
     return len(fish)
 
+
+def answer_2(lines: List[str], days: int):
+
+    fish = fish_redux([int(f) for f in lines[0].split(',')])
+
+    for _ in range(days):
+        fish = next_day_redux(fish)
+
+    return sum(fish)
