@@ -16,8 +16,8 @@ class Vector:
         return -1 if x < 0 else 1 if x > 0 else x
 
     def is_diagonal(self):
-        dir_x = self.direction(self._start.x - self._end.x)
-        dir_y = self.direction(self._start.y - self._end.y)
+        dir_x = self.direction(self._end.x - self._start.x)
+        dir_y = self.direction(self._end.y - self._start.y)
         return dir_x != 0 and dir_y != 0
 
     def points(self):
