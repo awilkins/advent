@@ -35,34 +35,35 @@ def build_cavemap(lines: List[str]):
 
 NULL_CAVE = Cave('NULL')
 
-def next_paths(cavemap: Dict[str, Cave], path: List[Cave], revisit = NULL_CAVE):
+def next_paths(cavemap: Dict[str, Cave], path: List[Cave], revisit: Cave):
 
     for cave_name in path[-1]._connections:
 
         next_cave = cavemap[cave_name]
         visited = len([ cave for cave in path if cave == next_cave])
         if revisit == next_cave: visited -= 1
+        visited = max(0, visited)
 
         if not visited or cave_name == cave_name.upper():
             yield cavemap[cave_name]
 
 
-def traverse(cavemap, stack, paths):
-    np = next_paths(cavemap, stack)
+def traverse(cavemap, stack, paths, revisit = NULL_CAVE):
+    np = next_paths(cavemap, stack, revisit)
     for p in np:
         stack.append(p)
         if p._name == 'end':
             paths.append(stack.copy())
             stack.pop()
             continue
-        traverse(cavemap, stack, paths)
+        traverse(cavemap, stack, paths, revisit)
         stack.pop()
 
 
 def pretty_path(path: List[Cave]) -> str:
     return ",".join([ cave._name for cave in path ])
 
-def find_paths(cavemap: Dict[str, Cave]):
+def find_paths(cavemap: Dict[str, Cave], revisits = False):
 
     start = cavemap['start']
 
@@ -71,8 +72,28 @@ def find_paths(cavemap: Dict[str, Cave]):
 
     traverse(cavemap, stack, paths)
 
-    return paths
+    if revisits:
+        small_caves = [
+            cave for cave in cavemap.values()
+            if
+                cave._name == cave._name.lower() and
+                cave._name != 'start' and
+                cave._name != 'end'
+        ]
 
+        for small_cave in small_caves:
+            traverse(cavemap, stack, paths, small_cave)
+
+
+    spaths = [ pretty_path(path) for path in paths ]
+    spaths = set(spaths)
+
+    paths = [
+        [ cavemap[cave] for cave in spath.split(',') ]
+        for spath in spaths
+    ]
+
+    return paths
 
 
 
