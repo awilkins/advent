@@ -83,7 +83,6 @@ def find_paths(cavemap: Dict[str, Cave], revisits = False):
         for small_cave in small_caves:
             traverse(cavemap, stack, paths, revisit=small_cave)
 
-
     spaths = [ pretty_path(path) for path in paths ]
     spaths = set(spaths)
 
