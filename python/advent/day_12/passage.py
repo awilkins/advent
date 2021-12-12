@@ -33,10 +33,17 @@ def build_cavemap(lines: List[str]):
     return cavemap
 
 
-def next_paths(cavemap: Dict[str, Cave], path: List[Cave], revisit = None):
+NULL_CAVE = Cave('NULL')
+
+def next_paths(cavemap: Dict[str, Cave], path: List[Cave], revisit = NULL_CAVE):
 
     for cave_name in path[-1]._connections:
-        if cavemap[cave_name] not in path or cave_name == cave_name.upper():
+
+        next_cave = cavemap[cave_name]
+        visited = len([ cave for cave in path if cave == next_cave])
+        if revisit == next_cave: visited -= 1
+
+        if not visited or cave_name == cave_name.upper():
             yield cavemap[cave_name]
 
 
