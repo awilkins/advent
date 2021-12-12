@@ -102,6 +102,6 @@ class TestThing(TestCase):
         cavemap = build_cavemap(lines)
         answer = len(find_paths(cavemap, revisits=True))
         print(f'\nAnswer 2 : {answer}\n')
-        # expected =
-        # self.assertEqual(expected, answer)
+        expected = 83475
+        self.assertEqual(expected, answer)
 
