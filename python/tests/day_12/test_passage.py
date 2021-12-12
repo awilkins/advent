@@ -58,7 +58,7 @@ class TestThing(TestCase):
         cavemap = build_cavemap(lines)
         expected = 10
         paths = find_paths(cavemap)
-        print("\n".join([ f"{pretty_path(p)}" for p in paths]))
+        # print("\n".join([ f"{pretty_path(p)}" for p in paths]))
         actual = len(paths)
         self.assertEqual(expected, actual)
 
@@ -67,7 +67,7 @@ class TestThing(TestCase):
         cavemap = build_cavemap(lines)
         expected = 19
         paths = find_paths(cavemap)
-        print("\n".join([ f"{pretty_path(p)}" for p in paths]))
+        # print("\n".join([ f"{pretty_path(p)}" for p in paths]))
         actual = len(paths)
         self.assertEqual(expected, actual)
 
@@ -76,7 +76,7 @@ class TestThing(TestCase):
         cavemap = build_cavemap(lines)
         expected = 226
         paths = find_paths(cavemap)
-        print("\n".join([ f"{pretty_path(p)}" for p in paths]))
+        # print("\n".join([ f"{pretty_path(p)}" for p in paths]))
         actual = len(paths)
         self.assertEqual(expected, actual)
 
@@ -85,16 +85,23 @@ class TestThing(TestCase):
         cavemap = build_cavemap(lines)
         answer = len(find_paths(cavemap))
         print(f'\nAnswer 1 : {answer}\n')
+        expected = 3230
+        self.assertEqual(expected, answer)
 
+    def test_example_1_2(self):
+        lines = EXAMPLE_INPUT.splitlines()
+        cavemap = build_cavemap(lines)
+        expected = 36
+        paths = find_paths(cavemap, revisits=True)
+        # print("\n".join([ f"{pretty_path(p)}" for p in paths]))
+        actual = len(paths)
+        self.assertEqual(expected, actual)
+
+    def test_answer_2(self):
+        lines = get_resource(f'day_{DAY}/input.txt').read_text().splitlines()
+        cavemap = build_cavemap(lines)
+        answer = len(find_paths(cavemap, revisits=True))
+        print(f'\nAnswer 2 : {answer}\n')
         # expected =
         # self.assertEqual(expected, answer)
-
-    # def test_answer_2(self):
-    #     lines = get_resource(f'day_{DAY}/input.txt').read_text().splitlines()
-
-    #     answer =
-    #     print(f'\nAnswer 2 : {answer}\n')
-
-    #     # expected =
-    #     # self.assertEqual(expected, answer)
 
