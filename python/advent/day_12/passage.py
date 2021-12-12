@@ -42,9 +42,8 @@ def next_paths(cavemap: Dict[str, Cave], path: List[Cave], revisit: Cave):
         next_cave = cavemap[cave_name]
         visited = len([ cave for cave in path if cave == next_cave])
         if revisit == next_cave: visited -= 1
-        visited = max(0, visited)
 
-        if not visited or cave_name == cave_name.upper():
+        if not visited > 0 or cave_name == cave_name.upper():
             yield cavemap[cave_name]
 
 
