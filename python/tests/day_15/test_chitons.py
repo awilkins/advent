@@ -1,4 +1,5 @@
 from unittest import TestCase
+from unittest.case import skip
 
 from ..util import get_resource
 
@@ -21,48 +22,29 @@ EXAMPLE_INPUT = """\
 
 class TestThing(TestCase):
 
-    def test_squares_in_rank(self):
-
-        expected = [
-            (0, 1),
-            (1, 0),
-        ]
-        self.assertListEqual(expected, squares_in_rank(10, 1))
-
-        expected = [
-            (8, 9),
-            (9, 8),
-        ]
-        self.assertListEqual(expected, squares_in_rank(10, 17))
-
-        self.assertListEqual(
-            [(9,9)], squares_in_rank(10, 18)
-        )
-
-
     def test_example_1(self):
         lines = EXAMPLE_INPUT.splitlines()
         expected = 40
         actual = answer_1(lines)
         self.assertEqual(expected, actual)
 
-    # def test_example_2(self):
-    #     lines = EXAMPLE_INPUT.splitlines()
-    #     expected =
-    #     actual =
-    #     self.assertEqual(expected, actual)
+    def test_example_2(self):
+        lines = EXAMPLE_INPUT.splitlines()
+        expected = 315
+        actual = answer_2(lines)
+        self.assertEqual(expected, actual)
 
     def test_answer_1(self):
         lines = get_resource(f'day_{DAY}/input.txt').read_text().splitlines()
         answer = answer_1(lines)
         print(f'\nAnswer 1 : {answer}\n')
+        expected = 717
+        self.assertEqual(expected, answer)
+
+    def test_answer_2(self):
+        lines = get_resource(f'day_{DAY}/input.txt').read_text().splitlines()
+        answer = answer_2(lines)
+        print(f'\nAnswer 2 : {answer}\n')
         # expected =
         # self.assertEqual(expected, answer)
-
-    # def test_answer_2(self):
-    #     lines = get_resource(f'day_{DAY}/input.txt').read_text().splitlines()
-    #     answer =
-    #     print(f'\nAnswer 2 : {answer}\n')
-    #     # expected =
-    #     # self.assertEqual(expected, answer)
 
