@@ -23,7 +23,7 @@ EXAMPLE_INPUT = """\
 10000
 """
 
-class TestThing(TestCase):
+class TestCalories(TestCase):
 
     def test_example_1(self):
         lines = EXAMPLE_INPUT.splitlines()
