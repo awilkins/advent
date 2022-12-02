@@ -7,13 +7,13 @@ class TestThing(TestCase):
     def test_example_1(self):
         lines = EXAMPLE_INPUT.splitlines()
         expected =
-        actual =
+        actual = answer_1(lines)
         self.assertEqual(expected, actual)
 
     # def test_example_2(self):
     #     lines = EXAMPLE_INPUT.splitlines()
     #     expected =
-    #     actual =
+    #     actual = answer_2(lines)
     #     self.assertEqual(expected, actual)
 
     # def test_answer_1(self):
