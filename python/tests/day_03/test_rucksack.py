@@ -40,11 +40,11 @@ class TestThing(TestCase):
         self.assertEqual('r', group_item(g[0]))
         self.assertEqual('Z', group_item(g[1]))
 
-    # def test_example_2(self):
-    #     lines = EXAMPLE_INPUT.splitlines()
-    #     expected =
-    #     actual = answer_2(lines)
-    #     self.assertEqual(expected, actual)
+    def test_example_2(self):
+        lines = EXAMPLE_INPUT.splitlines()
+        expected = 70
+        actual = answer_2(lines)
+        self.assertEqual(expected, actual)
 
     def test_answer_1(self):
         lines = get_resource(f'day_{DAY}/input.txt').read_text().splitlines()
