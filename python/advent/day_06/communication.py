@@ -4,13 +4,10 @@ from collections import deque
 from typing import List
 
 def detect_unique_sequence(input:str, size: int):
-    buffer = deque(list(input[0:size]))
 
     index = size
 
-    while len(set(buffer)) < size:
-        buffer.popleft()
-        buffer.append(input[index])
+    while len(set(input[index - size : index])) < size:
         index += 1
 
     return index
