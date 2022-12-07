@@ -92,9 +92,9 @@ def answer_2(lines: List[str]):
     dirs = list(all_dirs(root))
     dirs = sorted(dirs, key=lambda d : d.size())
 
-    DISK_SIZE = 70000000
+    DISK_SIZE = 70_000_000
     remaining_space = DISK_SIZE - root.size()
-    UPDATE_SPACE = 30000000
+    UPDATE_SPACE = 30_000_000
     save_size = UPDATE_SPACE - remaining_space
 
     delete_me = next(d for d in dirs if d.size() >= save_size)
