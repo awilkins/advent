@@ -1,2 +1,5 @@
-**/__pycache__/*
-**/*.pyc
+**/target
+nosetests.xml
+.noseids
+__pycache__/
+*.egg-info/
