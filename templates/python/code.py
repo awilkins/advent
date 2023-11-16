@@ -1,10 +1,10 @@
 
-from typing import List
+from typing import Sequence
 
 
-def answer_1(lines: List[str]):
+def answer_1(lines: Sequence[str]):
     pass
 
 
-def answer_2(lines: List[str]):
+def answer_2(lines: Sequence[str]):
     pass
