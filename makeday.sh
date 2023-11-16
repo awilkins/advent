@@ -8,7 +8,7 @@ DAY="${DAYPAD: -2}"
 NAME=$2
 
 mkdir -p {resources,python/{advent,tests}}"/day_${DAY}"
-touch "python/{advent,tests}/day_${DAY}/__init__.py"
+touch python/{advent,tests}/"day_${DAY}/__init__.py"
 
 cp templates/python/test_code_head.py "python/tests/day_$DAY/test_$2.py"
 
