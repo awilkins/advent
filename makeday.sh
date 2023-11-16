@@ -7,6 +7,18 @@ DAY="${DAYPAD: -2}"
 
 NAME=$2
 
+if [ -z $1 ]
+then
+  echo "Must provide a day number"
+  exit 1
+fi
+
+if [ -z $NAME ]
+then
+  echo "Must provide a name for your module"
+  exit 1
+fi
+
 mkdir -p {resources,python/{advent,tests}}"/day_${DAY}"
 touch python/{advent,tests}/"day_${DAY}/__init__.py"
 
