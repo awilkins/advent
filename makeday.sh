@@ -35,7 +35,12 @@ cat templates/python/test_code_foot.py >> "advent/day_$DAY/test_$2.py"
 cp templates/python/code.py "advent/day_$DAY/$2.py"
 
 # Get input
-curl "https://adventofcode.com/${YEAR}/day/${1}/input" --cookie "session=${AOC_TOKEN}" > "resources/day_$DAY/input.txt"
+if [ -n "$AOC_TOKEN" ]
+then
+  curl "https://adventofcode.com/${YEAR}/day/${1}/input" --cookie "session=${AOC_TOKEN}" > "resources/day_$DAY/input.txt"
+else
+  echo "AOC_TOKEN not found, skipping input fetch - put input in resources/day_$DAY/input.txt"
+fi
 
 # Open VSCode windows on the code we created
 code "advent/day_$DAY/$2.py" "advent/day_$DAY/test_$NAME.py"
