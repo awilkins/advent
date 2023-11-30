@@ -1,4 +1,4 @@
 from unittest import TestCase
 
-from ..util import get_resource
+from ..util import get_resource_lines
 
