@@ -1,32 +1,22 @@
-# Adrian's Advent of Code
+# Advent of Code
 
-Like an idiot, I'm going to try to do this in Python (which I know) **and** Rust
-(which I don't).
+## General
 
-## Python
+### `makeday.sh`
 
-Python is in a Poetry project.
+Why bother with all that tedious writing of boilerplate? The Advent format is
+pretty predictable and hasn't changed in years.
 
-To start ...
+- You'll have to write two functions
+- You'll be working with an input file
 
-```
-cd python
-poetry install
-poetry shell
+So this script creates some code from templates and grabs the input for you.
 
-# Run tests to get the answers
-# use -s or --nocapture because the answers are printed to STDOUT by the tests
-nosetests -s tests/day_01/test_advent_01.py
-```
+For this you'll need your session token for Advent of Code, which you can grab
+from your browser session - after you've logged in, it will be in your cookies
+each time you make a page request, so bash F12 and go to the network tab and
+find it.
 
-## Rust
+You need to export this to your environment as `AOC_TOKEN` ; I've put it in 
 
-Rust is a normal Rust kinda project.
-
-```
-cd rust
-cargo run
-# OR
-cargo build --release
-time ./target/release/advent # for speed bragging rights
-```
+Note that it's very rude to grab the input EVERY TIME you run your code.
