@@ -1,12 +1,12 @@
 
-EXAMPLE_INPUT = """\
+EXAMPLE_ONE = """\
 """
 
-class TestPartOne(TestCase):
+class TestPartOne:
     pass
 
     def test_example_1(self):
-        lines = EXAMPLE_INPUT.splitlines()
+        lines = EXAMPLE_ONE.splitlines()
         expected =
         actual = answer_1(lines)
         self.assertEqual(expected, actual)
@@ -19,11 +19,13 @@ class TestPartOne(TestCase):
     #     # self.assertEqual(expected, answer)
 
 
-class TestPartTwo(TestCase):
+EXAMPLE_TWO = EXAMPLE_ONE
+
+class TestPartTwo:
     pass
 
     # def test_example_2(self):
-    #     lines = EXAMPLE_INPUT.splitlines()
+    #     lines = EXAMPLE_TWO.splitlines()
     #     expected =
     #     actual = answer_2(lines)
     #     self.assertEqual(expected, actual)
