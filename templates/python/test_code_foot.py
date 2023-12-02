@@ -16,7 +16,7 @@ class TestPartOne:
     #     answer = answer_1(lines)
     #     print(f'\nAnswer 1 : {answer}\n')
     #     # expected =
-    #     # assert expected == actual
+    #     # assert expected == answer
 
 
 EXAMPLE_TWO = EXAMPLE_ONE
@@ -35,5 +35,5 @@ class TestPartTwo:
     #     answer = answer_2(lines)
     #     print(f'\nAnswer 2 : {answer}\n')
     #     # expected =
-    #     # assert expected == actual
+    #     # assert expected == answer
 
