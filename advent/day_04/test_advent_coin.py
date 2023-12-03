@@ -21,10 +21,10 @@ class TestPartOne:
         assert 1048970 == find_block("pqrstuv")
 
     def test_answer_1(self):
-        answer = answer_1("ckczppom")
+        answer = find_block("ckczppom")
         print(f"\nAnswer 1 : {answer}\n")
-        # expected =
-        # assert expected == answer
+        expected = 117946
+        assert expected == answer
 
 
 EXAMPLE_TWO = EXAMPLE_ONE
@@ -41,6 +41,6 @@ class TestPartTwo:
 
     def test_answer_2(self):
         answer = find_block("ckczppom", 6)
-        print(f'\nAnswer 2 : {answer}\n')
-        # expected =
-        # assert expected == answer
+        print(f"\nAnswer 2 : {answer}\n")
+        expected = 3938038
+        assert expected == answer

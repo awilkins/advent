@@ -13,11 +13,3 @@ def find_block(key: str, length=5):
         hash_output = md5((key + str(block_number)).encode('utf-8'))
 
     return block_number
-
-
-def answer_1(line: str):
-    return find_block(line)
-
-
-def answer_2(lines: Sequence[str]):
-    pass
