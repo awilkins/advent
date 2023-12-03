@@ -48,7 +48,7 @@ class TestThing:
         print(f'\nAnswer 1 : {answer}\n')
 
         expected = 138
-        assert expected, answer)
+        assert expected == answer
 
     def test_answer_2(self):
         line = get_resource(f'day_{DAY}/input.txt').read_text()
