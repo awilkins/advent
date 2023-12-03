@@ -1,4 +1,4 @@
-from unittest import TestCase
+import pytest
 
 from ..util import get_resource
 
@@ -18,33 +18,28 @@ EXAMPLES = [
     (")())())", -3),
 ]
 
-def check(input, expected):
+
+@pytest.mark.parametrize('input, expected', [
+    *EXAMPLES
+])
+def test_examples_1(input, expected):
     elevator = Elevator()
     elevator.execute(input)
     assert elevator.floor() == expected
 
-def test_examples_1():
-    for input, expected in EXAMPLES:
-        yield check, input, expected
-
-
-def check_2(input, expected):
-    e = Elevator()
-    actual = e.find_basement(input)
-    assert expected == actual
 
 EXAMPLES_2 = [
     (")", 1),
     ("()())", 5),
 ]
 
-def test_examples_2():
-    for input, expected in EXAMPLES_2:
-        yield check_2, input, expected
+@pytest.mark.parametrize('input, expected', *EXAMPLES_2)
+def check_2(input, expected):
+    e = Elevator()
+    actual = e.find_basement(input)
+    assert expected == actual
 
-
-class TestThing(TestCase):
-
+class TestThing:
 
     def test_answer_1(self):
         line = get_resource(f'day_{DAY}/input.txt').read_text()
@@ -52,8 +47,8 @@ class TestThing(TestCase):
         answer = answer_1(line)
         print(f'\nAnswer 1 : {answer}\n')
 
-        # expected =
-        # self.assertEqual(expected, answer)
+        expected = 138
+        assert expected, answer)
 
     def test_answer_2(self):
         line = get_resource(f'day_{DAY}/input.txt').read_text()
@@ -61,6 +56,6 @@ class TestThing(TestCase):
         answer = answer_2(line)
         print(f'\nAnswer 2 : {answer}\n')
 
-    #     # expected =
-    #     # self.assertEqual(expected, answer)
+        expected = 1771
+        assert answer == expected
 
