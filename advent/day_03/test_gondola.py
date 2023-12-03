@@ -1,5 +1,7 @@
 import pytest
 
+from itertools import chain
+
 from ..util import get_resource_lines
 
 DAY = "03"
@@ -20,31 +22,122 @@ EXAMPLE_ONE = """\
 """.splitlines()
 
 
+#       0123456789
+#
+# 00  : 467..114..
+# 01  : ...*......
+# 02  : ..35..633.
+# 03  : ......#...
+# 04  : 617*......
+# 05  : .....+.58.
+# 06  : ..592.....
+# 07  : ......755.
+# 08  : ...$.*....
+# 09  : .664.598..
+#
+
+EDGE_ONE = """\
+..........
+..........
+..........
+......*...
+.......123
+""".splitlines()
+
+EDGE_TWO = """\
+.......123
+......*...
+..........
+..........
+..........
+""".splitlines()
+
+EDGE_THREE = """\
+..........
+..........
+..........
+...*......
+123.......
+""".splitlines()
+
+EDGE_FOUR = """\
+123.......
+...*......
+..........
+..........
+..........
+""".splitlines()
+
+
 class TestPartOne:
     pass
 
-    @pytest.mark.parametrize('input, expected', [
-        (EXAMPLE_ONE[0], [467, 114]),
-        (EXAMPLE_ONE[1], []),
-        ('.....123', [ 123 ]),
-    ])
+    @pytest.mark.parametrize(
+        "input, expected",
+        [
+            (EXAMPLE_ONE[0], [(467, 0), (114, 5)]),
+            (EXAMPLE_ONE[1], []),
+            (".....123", [ (123, 5) ]),
+        ],
+    )
     def test_find_number_groups(self, input, expected):
         assert find_number_groups(input) == expected
 
+    ALL_NUMBERS =  get_all_numbers(EXAMPLE_ONE)
 
+    NUMBERS_WITH_SYMBOLS = [number for number in ALL_NUMBERS if number[0] not in [114, 58]]
 
-    # def test_example_1(self):
-    #     lines = EXAMPLE_ONE
-    #     expected =
-    #     actual = answer_1(lines)
-    #     assert expected == actual
+    # @pytest.mark.skip
+    @pytest.mark.parametrize("input", NUMBERS_WITH_SYMBOLS)
+    def test_has_adjacent_symbol(self, input):
+        assert has_adjacent_symbol(EXAMPLE_ONE, input)
 
-    # def test_answer_1(self):
-    #     lines = get_resource_lines(DAY)
-    #     answer = answer_1(lines)
-    #     print(f'\nAnswer 1 : {answer}\n')
-    #     # expected =
-    #     # assert expected == answer
+    @pytest.mark.parametrize("input", [
+        (114, (5, 0)),
+        (58, (7, 5))
+    ])
+    def test_has_no_adjacent_symbol(self, input):
+        assert not has_adjacent_symbol(EXAMPLE_ONE, input)
+
+    def test_example_1(self):
+        lines = EXAMPLE_ONE
+        expected = 4361
+        actual = answer_1(lines)
+        assert expected == actual
+
+    @pytest.mark.parametrize(
+        "input",
+        [
+            EDGE_ONE,
+            EDGE_TWO,
+            EDGE_THREE,
+            EDGE_FOUR,
+        ],
+    )
+    def test_edges(self, input):
+        lines = input
+        expected = 123
+        actual = answer_1(lines)
+        assert expected == actual
+
+    def test_do_digits_count_as_symbols(self):
+        TEST_GRID = """\
+        ..........
+        ..........
+        ...123....
+        ......321.
+        ..........
+        """.splitlines()
+
+        assert answer_1(TEST_GRID) == 0
+
+    def test_answer_1(self):
+        lines = get_resource_lines(DAY)
+        answer = answer_1(lines)
+        print(f"\nAnswer 1 : {answer}\n")
+        # expected =
+        # assert expected == answer
+        assert answer != 541476
 
 
 EXAMPLE_TWO = EXAMPLE_ONE
