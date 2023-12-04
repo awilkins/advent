@@ -1,12 +1,12 @@
 
 EXAMPLE_ONE = """\
-"""
+""".splitlines()
 
 class TestPartOne:
     pass
 
     def test_example_1(self):
-        lines = EXAMPLE_ONE.splitlines()
+        lines = EXAMPLE_ONE
         expected =
         actual = answer_1(lines)
         assert expected == actual
@@ -25,7 +25,7 @@ class TestPartTwo:
     pass
 
     # def test_example_2(self):
-    #     lines = EXAMPLE_TWO.splitlines()
+    #     lines = EXAMPLE_TWO
     #     expected =
     #     actual = answer_2(lines)
     #     assert expected == actual
