@@ -39,19 +39,9 @@ def answer_1(lines: Sequence[str]):
 def answer_2(lines: Sequence[str]):
     cards = list(Card(line) for line in lines)
 
-    card_pile = []
-    card_queue = deque(cards)
+    counts = [1] * len(cards)
+    for card in cards:
+        for index in range(card.number, card.matching() + card.number):
+            counts[index] += counts[card.number - 1]
 
-    while len(card_queue):
-        current_card = card_queue.popleft()
-        matches = current_card.matching()
-
-        index = current_card.number # this works because Card 1 is at index 0
-        end = index + matches
-        # copy original cards (if end is index, zero cards)
-        card_queue.extend(cards[index:end])
-
-        # put current card on pile
-        card_pile.append(current_card)
-
-    return len(card_pile)
+    return sum(counts)
