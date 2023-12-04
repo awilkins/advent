@@ -146,7 +146,3 @@ def answer_2(lines: Sequence[str]):
         (this.number * that.number) for this, that in share_pairs
     )
     return power
-
-
-
-
