@@ -48,7 +48,7 @@ def answer_2(lines: Sequence[str]):
 
         index = current_card.number # this works because Card 1 is at index 0
         end = index + matches
-        # copy original cards
+        # copy original cards (if end is index, zero cards)
         card_queue.extend(cards[index:end])
 
         # put current card on pile
