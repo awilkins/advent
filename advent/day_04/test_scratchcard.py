@@ -1,7 +1,8 @@
 import pytest
 
 from ..util import get_resource_lines
-DAY="04"
+
+DAY = "04"
 
 from advent.day_04.scratchcard import *
 
@@ -14,32 +15,36 @@ Card 5: 87 83 26 28 32 | 88 30 70 12 93 22 82 36
 Card 6: 31 18 13 56 72 | 74 77 10 23 35 67 36 11
 """.splitlines()
 
+
 class TestPartOne:
     pass
 
-    @pytest.mark.parametrize('line,score', [
-        (EXAMPLE_ONE[0], 8),
-        (EXAMPLE_ONE[1], 2),
-        (EXAMPLE_ONE[2], 2),
-        (EXAMPLE_ONE[3], 1),
-        (EXAMPLE_ONE[4], 0),
-        (EXAMPLE_ONE[5], 0),
-    ])
+    @pytest.mark.parametrize(
+        "line,score",
+        [
+            (EXAMPLE_ONE[0], 8),
+            (EXAMPLE_ONE[1], 2),
+            (EXAMPLE_ONE[2], 2),
+            (EXAMPLE_ONE[3], 1),
+            (EXAMPLE_ONE[4], 0),
+            (EXAMPLE_ONE[5], 0),
+        ],
+    )
     def test_example_1(self, line, score):
         card = Card(line)
         assert card.score() == score
         assert card.number > 0
 
-
     def test_answer_1(self):
         lines = get_resource_lines(DAY)
         answer = answer_1(lines)
-        print(f'\nAnswer 1 : {answer}\n')
-        # expected =
-        # assert expected == answer
+        print(f"\nAnswer 1 : {answer}\n")
+        expected = 23678
+        assert expected == answer
 
 
 EXAMPLE_TWO = EXAMPLE_ONE
+
 
 class TestPartTwo:
     pass
@@ -53,7 +58,6 @@ class TestPartTwo:
     def test_answer_2(self):
         lines = get_resource_lines(DAY)
         answer = answer_2(lines)
-        print(f'\nAnswer 2 : {answer}\n')
-        # expected =
-        # assert expected == answer
-
+        print(f"\nAnswer 2 : {answer}\n")
+        expected = 15455663
+        assert expected == answer
