@@ -1,0 +1,60 @@
+import pytest
+
+from ..util import get_resource_lines
+
+
+from advent.day_08.encoding import *
+
+DAY="08"
+
+EXAMPLE_ONE = """\
+\"\"
+""".splitlines()
+
+class TestPartOne:
+    pass
+
+    # def test_example_1(self):
+    #     lines = EXAMPLE_ONE
+    #     expected =
+    #     actual = answer_1(lines)
+    #     assert expected == actual
+
+    def test_answer_1(self):
+        lines = get_resource_lines(DAY)
+        answer = answer_1(lines)
+        print(f'\nAnswer 1 : {answer}\n')
+        # expected =
+        # assert expected == answer
+
+
+EXAMPLE_TWO = EXAMPLE_ONE
+
+class TestPartTwo:
+    pass
+
+    def test_find_nonwords(self):
+        lines = get_resource_lines(DAY)
+        nonwords = set()
+        for line in lines:
+            for c in line:
+                if not c.isalpha() or c.isdigit():
+                    nonwords.add(c)
+        print (set(
+            (ord(c), c) for c in
+            nonwords
+        ))
+
+    # def test_example_2(self):
+    #     lines = EXAMPLE_TWO
+    #     expected =
+    #     actual = answer_2(lines)
+    #     assert expected == actual
+
+    def test_answer_2(self):
+        lines = get_resource_lines(DAY)
+        answer = answer_2(lines)
+        print(f'\nAnswer 2 : {answer}\n')
+        # expected =
+        # assert expected == answer
+
