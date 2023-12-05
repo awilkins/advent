@@ -44,4 +44,4 @@ else
 fi
 
 # Open VSCode windows on the code we created
-code "advent/day_$DAY/$2.py" "advent/day_$DAY/test_$NAME.py"
+code "advent/day_$DAY/$2.py" "advent/day_$DAY/test_$NAME.py" "resources/day_$DAY/input.txt"
