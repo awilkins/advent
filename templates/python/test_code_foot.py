@@ -5,11 +5,11 @@ EXAMPLE_ONE = """\
 class TestPartOne:
     pass
 
-    def test_example_1(self):
-        lines = EXAMPLE_ONE
-        expected =
-        actual = answer_1(lines)
-        assert expected == actual
+    # def test_example_1(self):
+    #     lines = EXAMPLE_ONE
+    #     expected =
+    #     actual = answer_1(lines)
+    #     assert expected == actual
 
     # def test_answer_1(self):
     #     lines = get_resource_lines(DAY)
