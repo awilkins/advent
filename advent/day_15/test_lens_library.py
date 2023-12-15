@@ -28,8 +28,8 @@ class TestPartOne:
         lines = get_resource_lines(DAY)
         answer = answer_1(lines)
         print(f"\nAnswer 1 : {answer}\n")
-        # expected =
-        # assert expected == answer
+        expected = 495972
+        assert expected == answer
 
 
 EXAMPLE_TWO = EXAMPLE_ONE
@@ -47,6 +47,6 @@ class TestPartTwo:
     def test_answer_2(self):
         lines = get_resource_lines(DAY)
         answer = answer_2(lines)
-        print(f'\nAnswer 2 : {answer}\n')
-        # expected =
-        # assert expected == answer
+        print(f"\nAnswer 2 : {answer}\n")
+        expected = 245223
+        assert expected == answer
