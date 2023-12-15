@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from collections import deque
-
 from typing import Sequence, List, NamedTuple
 
 
@@ -12,12 +10,12 @@ class Lens(NamedTuple):
 
 class HashMap:
 
-    boxes: list[deque[Lens]]
+    boxes: list[list[Lens]]
 
     def __init__(self):
         self.boxes = []
         for ii in range(256):
-            self.boxes.append(deque())
+            self.boxes.append(list())
 
     def __str__(self):
         lines = []
