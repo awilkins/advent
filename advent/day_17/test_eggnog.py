@@ -24,12 +24,12 @@ class TestPartOne:
         actual = answer_1(lines, 25)
         assert expected == actual
 
-    # def test_answer_1(self):
-    #     lines = get_resource_lines(DAY)
-    #     answer = answer_1(lines)
-    #     print(f'\nAnswer 1 : {answer}\n')
-    #     # expected =
-    #     # assert expected == answer
+    def test_answer_1(self):
+        lines = get_resource_lines(DAY)
+        answer = answer_1(lines, 150)
+        print(f'\nAnswer 1 : {answer}\n')
+        # expected =
+        # assert expected == answer
 
 
 EXAMPLE_TWO = EXAMPLE_ONE
@@ -37,16 +37,16 @@ EXAMPLE_TWO = EXAMPLE_ONE
 class TestPartTwo:
     pass
 
-    # def test_example_2(self):
-    #     lines = EXAMPLE_TWO
-    #     expected =
-    #     actual = answer_2(lines)
-    #     assert expected == actual
+    def test_example_2(self):
+        lines = EXAMPLE_TWO
+        expected = 3
+        actual = answer_2(lines, 25)
+        assert expected == actual
 
-    # def test_answer_2(self):
-    #     lines = get_resource_lines(DAY)
-    #     answer = answer_2(lines)
-    #     print(f'\nAnswer 2 : {answer}\n')
-    #     # expected =
-    #     # assert expected == answer
+    def test_answer_2(self):
+        lines = get_resource_lines(DAY)
+        answer = answer_2(lines, 150)
+        print(f'\nAnswer 2 : {answer}\n')
+        # expected =
+        # assert expected == answer
 
