@@ -57,63 +57,87 @@ def next_paths(vec: Vector, inertia: int) -> list[tuple[Vector, int]]:
 
     inertia += 1
     # Can't exceed inertia of 3
-    if inertia > 3:
+    if inertia > 2:
         possible.remove(vec)
 
     return [
         (pv, inertia if pv == vec else 0) for pv in possible
     ]
 
+def ultra_paths(vec: Vector, inertia: int) -> list[tuple[Vector, int]]:
+    """ Return the possible next paths for this condition """
+    inertia += 1
+    # Can't change direction without inertia 4
+    if inertia < 4:
+        return [(vec, inertia)]
+
+    # Can't backtrack
+    possible = [d for d in DIRECTIONS if d != vec.opposite()]
+
+    if inertia > 9:
+        possible.remove(vec)
+
+    return [
+        (pv, inertia if pv == vec else 0) for pv in possible
+    ]
 
 class PathState(NamedTuple):
     cost: int
     inertia: int
     path: tuple[Vector, ...]
 
-PathCostDict: TypeAlias = dict[Position, PathState]
+class StateKey(NamedTuple):
+    position: Position
+    vector: Vector
+    inertia: int
 
-def search(city: City, costs: PathCostDict):
+PathCostDict: TypeAlias = dict[StateKey, PathState]
 
-    to_visit = deque()
+def search(city: City, costs: PathCostDict, crucible_func=next_paths):
+
+    to_visit: deque[StateKey] = deque()
     origin = Position(0,0)
-    costs[origin] = PathState(0, 0, ())
 
     # Append the only starting path options
-    down = PathState(city.block(origin + DOWN), 1, (DOWN,))
-    costs[origin + DOWN] = down
-    to_visit.append(origin + DOWN)
+    down = PathState(city.block(origin + DOWN), 0, (DOWN,))
+    state_key = StateKey(origin + DOWN, DOWN, 0)
+    costs[state_key] = down
+    to_visit.append(state_key)
 
-    right = PathState(city.block(origin + RIGHT), 1, (RIGHT,))
-    costs[origin + RIGHT] = right
-    to_visit.append(origin + RIGHT)
+    right = PathState(city.block(origin + RIGHT), 0, (RIGHT,))
+    state_key = StateKey(origin + RIGHT, RIGHT, 0)
+    costs[state_key] = right
+    to_visit.append(state_key)
 
     while to_visit:
         visiting = to_visit.popleft()
         state = costs[visiting]
-        possibles = next_paths(state.path[-1], state.inertia)
+        possibles = crucible_func(state.path[-1], state.inertia)
         for p in possibles:
             new_vector = p[0]
             new_inertia = p[1]
-            new_pos = visiting + new_vector
+            new_pos = visiting.position + new_vector
             if 0 <= new_pos.x < len(city.blocks[0]) and \
                0 <= new_pos.y < len(city.blocks):
                 new_cost = state.cost + city.block(new_pos)
-                if new_pos in costs and costs[new_pos].cost <= new_cost:
+                new_key = StateKey(new_pos, new_vector, new_inertia)
+                if new_key in costs and costs[new_key].cost <= new_cost:
                     pass
                 else:
                     new_path = state.path + (new_vector,)
-                    costs[new_pos] = PathState(
+                    costs[new_key] = PathState(
                         new_cost,
                         new_inertia,
                         new_path,
                     )
-                    to_visit.append(new_pos)
+                    to_visit.append(new_key)
 
     end_of_city = Position(
         len(city.blocks[0]) -1,
         len(city.blocks) -1,
     )
-    return costs[end_of_city].cost
+    end_keys = [key for key in costs.keys() if key.position == end_of_city]
+    return min(state.cost for state in [costs[key] for key in end_keys])
 
 
 def answer_1(lines: Sequence[str]):
@@ -122,4 +146,5 @@ def answer_1(lines: Sequence[str]):
 
 
 def answer_2(lines: Sequence[str]):
-    pass
+    city = City(lines)
+    return search(city, PathCostDict(), ultra_paths)
