@@ -11,7 +11,7 @@ def get_resource(name: str) -> Path:
     return Path(resource_path, name)
 
 
-def get_resource_lines(day: str) -> List[str]:
+def get_resource_lines(day: str):# -> List[str]:
     return(
         get_resource(f'day_{day}/input.txt')
     ).read_text().splitlines()

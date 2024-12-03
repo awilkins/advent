@@ -2,17 +2,18 @@
 
 ## Personal Progress
 
-| Year | `1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 ` |
+| Year | `1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5` |
 |-     |-                                                    |
-| 2015 | `**                                                ` |
-| 2016 | `                                                  ` |
-| 2017 | `                                                  ` |
-| 2018 | `                                                  ` |
-| 2019 | `******************                                ` |
+| 2015 | `**` |
+| 2016 | `` |
+| 2017 | `` |
+| 2018 | `` |
+| 2019 | `******************` |
 | 2020 | `**************************************************` |
-| 2021 | `**********************************      *         ` |
-| 2022 | `*********************   **                        ` |
-| 2023 | `****                                              ` |
+| 2021 | `**********************************      *` |
+| 2022 | `*********************   **` |
+| 2023 | `****` |
+| 2023 | `` |
 
 ## Python
 
@@ -23,6 +24,7 @@ Some of the most useful Python features for doing Advent puzzles fast :
 
 - List comprehensions
   - e.g. "a list of integers for each one of these numeric strings" or
+
 ```python
 numeric_strings = [ '1', '3', '5', '7' ]
 # Longhand way
@@ -35,17 +37,20 @@ numbers = [int(numeric) for numeric in numeric_strings]
 print (slow_numbers, numbers)
 [1, 3, 5, 7] [1, 3, 5, 7]
 ```
+
 - Functions that do things with lists or iterables like `sum()`
+
 ```python
 total = sum(numbers)
 print(total)
 16
 ```
+
 - [`itertools`](https://docs.python.org/3/library/itertools.html)
 
 ## General
 
-### `makeday.sh`
+### `makeday` script
 
 Why bother with all that tedious writing of boilerplate? The Advent format is
 pretty predictable and hasn't changed in years.
