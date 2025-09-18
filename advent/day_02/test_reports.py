@@ -3,9 +3,9 @@ import pytest
 from ..util import get_resource_lines
 
 
-from advent.day_02.reports import *
+from advent.day_02.reports import get_reports, dampen, is_safe, answer_1, answer_2
 
-DAY="02"
+DAY = "02"
 
 EXAMPLE_ONE = """\
 7 6 4 2 1
@@ -15,6 +15,7 @@ EXAMPLE_ONE = """\
 8 6 4 4 1
 1 3 6 7 9
 """.splitlines()
+
 
 class TestPartOne:
     pass
@@ -38,12 +39,13 @@ class TestPartOne:
     def test_answer_1(self):
         lines = get_resource_lines(DAY)
         answer = answer_1(lines)
-        print(f'\nAnswer 1 : {answer}\n')
+        print(f"\nAnswer 1 : {answer}\n")
         expected = 314
         assert expected == answer
 
 
 EXAMPLE_TWO = EXAMPLE_ONE
+
 
 class TestPartTwo:
     pass
@@ -62,7 +64,7 @@ class TestPartTwo:
     def test_answer_2(self):
         lines = get_resource_lines(DAY)
         answer = answer_2(lines)
-        print(f'\nAnswer 2 : {answer}\n')
+        print(f"\nAnswer 2 : {answer}\n")
+
     #     # expected =
     #     # assert expected == answer
-
