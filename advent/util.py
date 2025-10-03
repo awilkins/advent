@@ -62,10 +62,12 @@ def get_local_resource(padded_day: str) -> Path:
 
 
 def get_resource_string(padded_day: str):  # -> List[str]:
+    """Returns the content of the input file as a single string"""
     return (get_local_resource(padded_day)).read_text()
 
 
 def get_resource_lines(padded_day: str):  # -> List[str]:
+    """Returns the content of the input file as lines"""
     return (get_local_resource(padded_day)).read_text().splitlines()
 
 
