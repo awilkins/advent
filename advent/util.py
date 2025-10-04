@@ -14,7 +14,8 @@ def get_resource_cache_path(padded_day: str) -> Path:
 def get_local_resource_path(padded_day: str) -> Path:
     module_path = Path(os.path.dirname(__file__))
     root_path = module_path.parent
-    return Path(root_path, "resources", f"day_{padded_day}", "input.txt")
+    year = get_advent_year()
+    return Path(root_path, "resources", year, f"day_{padded_day}", "input.txt")
 
 
 advent_year = None
