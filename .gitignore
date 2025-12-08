@@ -5,3 +5,4 @@ nosetests.xml
 __pycache__/
 *.egg-info/
 resources/
+.pytest_cache/
