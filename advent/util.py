@@ -25,10 +25,9 @@ def get_advent_year() -> str:
     global advent_year
     if advent_year:
         return advent_year
-    year_command = subprocess.run(
-        ["git", "name-rev", "--name-only", "HEAD"], capture_output=True
-    )
-    advent_year = str(year_command.stdout[0:4], "UTF-8")
+    year_command = subprocess.run(["cat", ".git/HEAD"], capture_output=True)
+    branch_name = str(year_command.stdout, "UTF-8").split("/")[-1]
+    advent_year = branch_name[0:4]
     return advent_year
 
 
