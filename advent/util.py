@@ -36,9 +36,10 @@ def download_resource(padded_day: str):
     day = int(padded_day)
     aoc_token = os.environ["AOC_TOKEN"]
     year = get_advent_year()
+    url = f"https://adventofcode.com/{year}/day/{day}/input"
     resp = urllib3.request(
         "GET",
-        f"https://adventofcode.com/{year}/day/{day}/input",
+        url,
         headers={
             "Cookie": f"session={aoc_token}",
         },
